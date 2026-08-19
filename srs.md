@@ -50,38 +50,20 @@ Bussiness Goal của khách hàng:
 
 Business Goals
 
-BG001: Hỗ trợ đặt xe trực tuyến
-Mục đích: Cho phép khách hàng tạo yêu cầu đặt xe một cách nhanh chóng, thuận tiện và quản lý toàn bộ quá trình đặt xe trên một nền tảng tập trung.
+| **Business Goal**                                          | **Mục đích**                                                                                                                                                                                                 |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **BG001: Hỗ trợ đặt xe trực tuyến**                        | Cho phép khách hàng tạo yêu cầu đặt xe nhanh chóng, thuận tiện và quản lý toàn bộ quá trình đặt xe trên một nền tảng tập trung.                                                                              |
+| **BG002: Tự động hóa việc tìm và phân công tài xế**        | Tự động xác định và lựa chọn tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành; tiếp tục tìm tài xế khác nếu tài xế được đề xuất từ chối hoặc không phản hồi.                     |
+| **BG003: Hỗ trợ theo dõi chuyến đi**                       | Cho phép khách hàng và nhân viên vận hành theo dõi trạng thái chuyến đi, thông tin tài xế và thời gian dự kiến tài xế đến.                                                                                   |
+| **BG004: Hỗ trợ quản lý và thực hiện chuyến đi**           | Cho phép tài xế nhận chuyến, cập nhật các trạng thái trong quá trình thực hiện và ghi nhận thông tin vị trí để hỗ trợ vận hành.                                                                              |
+| **BG005: Hỗ trợ tính cước và thanh toán**                  | Tính toán số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi; hỗ trợ thanh toán tiền mặt và thanh toán điện tử thông qua nhà cung cấp bên ngoài.                                       |
+| **BG006: Quản lý thông báo tập trung**                     | Đảm bảo khách hàng và tài xế nhận được thông báo kịp thời về các sự kiện quan trọng của chuyến đi, đồng thời cho phép mở rộng thêm các kênh thông báo trong tương lai.                                       |
+| **BG007: Hỗ trợ quản lý vận hành**                         | Cung cấp cho nhân viên vận hành khả năng quản lý khách hàng, tài xế, phương tiện, chuyến đi và xử lý các trường hợp bất thường.                                                                              |
+| **BG008: Hỗ trợ báo cáo và quản lý hiệu quả kinh doanh**   | Cung cấp dữ liệu về số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế để hỗ trợ quản lý và ra quyết định.                                                             |
+| **BG009: Đảm bảo an toàn và bảo mật thông tin**            | Bảo vệ thông tin cá nhân, dữ liệu vị trí, dữ liệu giao dịch và kiểm soát quyền truy cập đối với các chức năng nhạy cảm.                                                                                      |
+| **BG010: Đảm bảo khả năng mở rộng và phát triển hệ thống** | Xây dựng nền tảng có thể phục vụ số lượng lớn khách hàng và tài xế, cho phép mở rộng độc lập các thành phần và bổ sung dịch vụ, phương thức thanh toán hoặc nhà cung cấp mới trong tương lai.                |
+| **BG011: Đảm bảo tính ổn định và liên tục của hệ thống**   | Hạn chế việc lỗi ở một chức năng như thanh toán hoặc thông báo ảnh hưởng đến toàn bộ hệ thống đặt xe, đồng thời cho phép triển khai các chức năng mới từng phần mà ít ảnh hưởng đến hệ thống đang hoạt động. |
 
-BG002: Tự động hóa việc tìm và phân công tài xế
-Mục đích: Tự động xác định và lựa chọn tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành, đồng thời tiếp tục tìm tài xế khác nếu tài xế được đề xuất từ chối hoặc không phản hồi.
-
-BG003: Hỗ trợ theo dõi chuyến đi
-Mục đích: Cho phép khách hàng và nhân viên vận hành theo dõi trạng thái chuyến đi, thông tin tài xế và thời gian dự kiến tài xế đến.
-
-BG004: Hỗ trợ quản lý và thực hiện chuyến đi
-Mục đích: Cho phép tài xế nhận chuyến, cập nhật các trạng thái trong quá trình thực hiện và ghi nhận thông tin vị trí để hỗ trợ vận hành.
-
-BG005: Hỗ trợ tính cước và thanh toán
-Mục đích: Tính toán số tiền khách hàng phải trả dựa trên loại dịch vụ và thông tin chuyến đi, đồng thời hỗ trợ thanh toán tiền mặt và thanh toán điện tử thông qua nhà cung cấp bên ngoài.
-
-BG006: Quản lý thông báo tập trung
-Mục đích: Đảm bảo khách hàng và tài xế nhận được thông báo kịp thời về các sự kiện quan trọng của chuyến đi, đồng thời cho phép mở rộng thêm các kênh thông báo trong tương lai.
-
-BG007: Hỗ trợ quản lý vận hành
-Mục đích: Cung cấp cho nhân viên vận hành khả năng quản lý khách hàng, tài xế, phương tiện, chuyến đi và xử lý các trường hợp bất thường.
-
-BG008: Hỗ trợ báo cáo và quản lý hiệu quả kinh doanh
-Mục đích: Cung cấp dữ liệu về số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế để hỗ trợ quản lý và ra quyết định.
-
-BG009: Đảm bảo an toàn và bảo mật thông tin
-Mục đích: Bảo vệ thông tin cá nhân, dữ liệu vị trí, dữ liệu giao dịch và kiểm soát quyền truy cập đối với các chức năng nhạy cảm.
-
-BG010: Đảm bảo khả năng mở rộng và phát triển hệ thống
-Mục đích: Xây dựng nền tảng có thể phục vụ số lượng lớn khách hàng và tài xế, cho phép mở rộng độc lập các thành phần và bổ sung dịch vụ, phương thức thanh toán hoặc nhà cung cấp mới trong tương lai.
-
-BG011: Đảm bảo tính ổn định và liên tục của hệ thống
-Mục đích: Hạn chế việc lỗi ở một chức năng như thanh toán hoặc thông báo ảnh hưởng đến toàn bộ hệ thống đặt xe, đồng thời cho phép triển khai các chức năng mới từng phần mà ít ảnh hưởng đến hệ thống đang hoạt động.
 
 Bước 4: 
 Xác định phạm vi
