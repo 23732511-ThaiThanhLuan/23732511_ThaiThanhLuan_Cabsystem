@@ -487,6 +487,7 @@ Bước 9:
 | **Employee (Nhân viên vận hành)**                 | **EmployeeID** (PK), FullName, Email, Password, RoleID (FK), EmployeeStatus, CreatedAt                                                                                                               |
 | **Role (Vai trò)**                                | **RoleID** (PK), RoleName, Description                                                                                                                                                               |
 | **AuditLog (Nhật ký hệ thống)**                   | **LogID** (PK), EmployeeID (FK), Action, EntityType, EntityID, Timestamp, Description                                                                                                                |
+
 Bước 10: Xác định Non-Bussiness Requirement
 
 | **ID**     | **Non-Business Requirement**     | **Diễn giải**                                                                                                                                   |
