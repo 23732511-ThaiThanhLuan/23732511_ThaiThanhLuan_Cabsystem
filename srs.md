@@ -12,20 +12,18 @@ Công ty ABC đang gặp khó khăn trong việc quản lý và mở rộng ho�
 
 Bước 2:
 
-| STT | Stakeholder                         | Vai trò                                       | Mối quan tâm / nhu cầu chính                                                       |
-| --: | ----------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------- |
-|   1 | **Khách hàng**                      | Người sử dụng dịch vụ đặt xe                  | Đăng ký, đặt xe, theo dõi chuyến, thanh toán, xem lịch sử và đánh giá tài xế       |
-|   2 | **Tài xế**                          | Người trực tiếp thực hiện chuyến xe           | Nhận chuyến, chấp nhận/từ chối, cập nhật trạng thái, quản lý phương tiện và vị trí |
-|   3 | **Nhân viên vận hành**              | Quản lý và giám sát hoạt động đặt xe          | Theo dõi chuyến, tài xế, khách hàng; xử lý chuyến lỗi; hỗ trợ vận hành             |
-|   4 | **Quản lý vận hành**                | Giám sát hiệu quả hoạt động                   | Theo dõi số chuyến, tỷ lệ hoàn thành/hủy, hiệu quả tài xế và các vấn đề vận hành   |
-|   5 | **Ban giám đốc / Lãnh đạo ABC**     | Định hướng và ra quyết định kinh doanh        | Doanh thu, hiệu quả hoạt động, khả năng mở rộng và phát triển dịch vụ              |
-|   6 | **Nhân viên quản trị hệ thống**     | Quản lý tài khoản, quyền và cấu hình hệ thống | Phân quyền, quản lý người dùng, bảo mật và cấu hình                                |
-|   7 | **Nhà cung cấp dịch vụ thanh toán** | Xử lý giao dịch thanh toán điện tử            | Tiếp nhận yêu cầu thanh toán, trả kết quả giao dịch thành công/thất bại            |
-|   8 | **Nhà cung cấp dịch vụ thông báo**  | Gửi thông báo đến khách hàng/tài xế           | Gửi thông báo đặt xe, nhận chuyến, trạng thái chuyến, thanh toán...                |
-|   9 | **Bộ phận tài chính/kế toán**       | Theo dõi và đối soát giao dịch                | Doanh thu, thanh toán, lịch sử giao dịch và đối soát                               |
-|  10 | **Business Analyst (BA)**           | Phân tích nghiệp vụ và làm rõ yêu cầu         | Xác định phạm vi, yêu cầu, quy trình, business rules và vấn đề cần xác nhận        |
-|  11 | **Đội phát triển hệ thống**         | Xây dựng và triển khai CAB                    | Hiểu và hiện thực hóa yêu cầu nghiệp vụ thành hệ thống                             |
-|  12 | **Bộ phận IT / vận hành hệ thống**  | Đảm bảo hệ thống hoạt động ổn định            | Hiệu năng, khả năng mở rộng, giám sát, bảo mật và xử lý sự cố                      |
+| **Stakeholder**                    | **Vai trò / Mối quan tâm**                                                                                                                                             |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Khách hàng**                     | Đăng ký, đặt xe, theo dõi chuyến đi, thanh toán và đánh giá tài xế; quan tâm đến tốc độ, tính chính xác, minh bạch và trải nghiệm sử dụng.                             |
+| **Tài xế**                         | Nhận và thực hiện chuyến, cập nhật trạng thái, thông tin phương tiện và vị trí; quan tâm đến việc nhận chuyến phù hợp, thông tin chính xác và thuận tiện khi làm việc. |
+| **Nhân viên vận hành**             | Quản lý khách hàng, tài xế, phương tiện và chuyến đi; theo dõi chuyến đang diễn ra và xử lý các trường hợp lỗi; quan tâm đến khả năng kiểm soát và xử lý nhanh.        |
+| **Quản lý / Ban giám đốc**         | Theo dõi hiệu quả hoạt động, doanh thu, số lượng chuyến, tỷ lệ hoàn thành/hủy; quan tâm đến hiệu quả kinh doanh, khả năng mở rộng và phát triển hệ thống.              |
+| **Bộ phận tài chính / kế toán**    | Theo dõi doanh thu, giao dịch và đối soát thanh toán; quan tâm đến tính chính xác, đầy đủ và an toàn của dữ liệu giao dịch.                                            |
+| **Nhà cung cấp thanh toán**        | Xử lý các giao dịch thanh toán điện tử; quan tâm đến tính chính xác, bảo mật và khả năng tích hợp ổn định với hệ thống CAB.                                            |
+| **Nhà cung cấp dịch vụ thông báo** | Cung cấp các kênh gửi thông báo cho khách hàng và tài xế; quan tâm đến khả năng gửi thông báo chính xác, ổn định và có thể mở rộng thêm kênh.                          |
+| **Business Analyst**               | Thu thập, phân tích và làm rõ nhu cầu của các bên liên quan; quan tâm đến việc xác định đúng phạm vi, yêu cầu, quy tắc nghiệp vụ và các vấn đề còn chưa rõ.            |
+| **Đội phát triển / IT**            | Phân tích, xây dựng và triển khai hệ thống; quan tâm đến yêu cầu rõ ràng, khả năng mở rộng, tích hợp và bảo trì hệ thống.                                              |
+
 
 Ma trận stakeholder
 | Stakeholder                        | Mức độ ảnh hưởng | Mức độ quan tâm | Nhóm                  | Chiến lược quản lý                                                                      |
