@@ -129,6 +129,7 @@ Bước 5:Xác định Bussiness Requirement:
 Bước 6: Xác định Bussiness Process
 
 BP01 – Đăng ký và quản lý tài khoản
+
 flowchart TD
     A([Bắt đầu]) --> B{Người dùng là ai?}
     B -->|Khách hàng| C[Khách hàng đăng ký tài khoản]
