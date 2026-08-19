@@ -627,6 +627,18 @@ UC001 – Đăng ký tài khoản khách hàng
 | **Luồng chính**    | 1. Khách hàng chọn đăng ký.<br>2. Hệ thống hiển thị biểu mẫu đăng ký.<br>3. Khách hàng nhập thông tin cá nhân.<br>4. Hệ thống kiểm tra tính hợp lệ.<br>5. Hệ thống tạo tài khoản.<br>6. Hệ thống thông báo đăng ký thành công. |
 | **Ngoại lệ**       | Nếu thông tin không hợp lệ → hệ thống thông báo lỗi và yêu cầu nhập lại.<br>Nếu email/số điện thoại đã tồn tại → hệ thống thông báo tài khoản đã tồn tại.                                                                      |
 
+UC002 – Đặt xe
+| **Thuộc tính**     | **Đặc tả**                                                                                                                                                                                                                             |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Use Case ID**    | UC002                                                                                                                                                                                                                                  |
+| **Tên**            | Đặt xe                                                                                                                                                                                                                                 |
+| **Actor**          | Khách hàng                                                                                                                                                                                                                             |
+| **Mục tiêu**       | Cho phép khách hàng tạo yêu cầu đặt xe.                                                                                                                                                                                                |
+| **Tiền điều kiện** | Khách hàng đã đăng nhập.                                                                                                                                                                                                               |
+| **Hậu điều kiện**  | Yêu cầu đặt xe được tạo và chuyển sang quá trình tìm tài xế.                                                                                                                                                                           |
+| **Luồng chính**    | 1. Khách hàng chọn chức năng đặt xe.<br>2. Nhập điểm đón.<br>3. Nhập điểm đến.<br>4. Chọn loại xe/dịch vụ.<br>5. Gửi yêu cầu.<br>6. Hệ thống kiểm tra thông tin.<br>7. Hệ thống tạo yêu cầu đặt xe.<br>8. Hệ thống bắt đầu tìm tài xế. |
+| **Ngoại lệ**       | Điểm đón/điểm đến không hợp lệ → yêu cầu nhập lại.<br>Không có loại xe phù hợp → thông báo cho khách hàng.<br>Lỗi hệ thống → thông báo và không tạo yêu cầu trùng.                                                                     |
+
 Bước 12: Xác định  Acceptance Criteria (AC)
 
 | **ID**   | **Acceptance Criteria**                                                                                                                                         |
@@ -659,7 +671,7 @@ Bước 12: Xác định  Acceptance Criteria (AC)
 | **AC26** | Khi một thành phần như thanh toán hoặc thông báo gặp lỗi, chức năng đặt xe và các chức năng không liên quan vẫn phải tiếp tục hoạt động trong phạm vi thiết kế. |
 | **AC27** | Hệ thống phải cho phép bổ sung loại dịch vụ, phương thức thanh toán hoặc kênh thông báo mới mà không yêu cầu xây dựng lại toàn bộ hệ thống.                     |
 
-Bước 13:
+Bước 13: RTM – Requirements Traceability Matrix
 
 | **BG**                                      | **BR**                                      | **FR**                                             | **Use Case**                     | **AC**     |
 | ------------------------------------------- | ------------------------------------------- | -------------------------------------------------- | -------------------------------- | ---------- |
