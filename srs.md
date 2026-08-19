@@ -659,3 +659,49 @@ Bước 12: Xác định  Acceptance Criteria (AC)
 | **AC26** | Khi một thành phần như thanh toán hoặc thông báo gặp lỗi, chức năng đặt xe và các chức năng không liên quan vẫn phải tiếp tục hoạt động trong phạm vi thiết kế. |
 | **AC27** | Hệ thống phải cho phép bổ sung loại dịch vụ, phương thức thanh toán hoặc kênh thông báo mới mà không yêu cầu xây dựng lại toàn bộ hệ thống.                     |
 
+Bước 13:
+
+| **BG**                                      | **BR**                                      | **FR**                                             | **Use Case**                     | **AC**     |
+| ------------------------------------------- | ------------------------------------------- | -------------------------------------------------- | -------------------------------- | ---------- |
+| BG001 – Hỗ trợ đặt xe trực tuyến            | BR01 – Cho phép khách hàng đặt xe           | FR007 – Nhập điểm đón/điểm đến                     | UC002 – Đặt xe                   | AC03       |
+| BG001                                       | BR01                                        | FR008 – Chọn loại xe                               | UC002 – Đặt xe                   | AC03       |
+| BG001                                       | BR01                                        | FR009 – Gửi yêu cầu đặt xe                         | UC002 – Đặt xe                   | AC04       |
+| BG002 – Tự động hóa tìm và phân công tài xế | BR02 – Tự động tìm tài xế phù hợp           | FR011 – Xác định tài xế phù hợp                    | UC003 – Tìm và phân công tài xế  | AC05       |
+| BG002                                       | BR02                                        | FR012 – Ưu tiên tài xế phù hợp và gần khách hàng   | UC003 – Tìm và phân công tài xế  | AC06       |
+| BG002                                       | BR02                                        | FR013 – Gửi yêu cầu cho tài xế                     | UC003 – Tìm và phân công tài xế  | AC07       |
+| BG002                                       | BR02                                        | FR014 – Cho phép tài xế chấp nhận/từ chối          | UC004 – Chấp nhận/Từ chối chuyến | AC07, AC08 |
+| BG002                                       | BR02                                        | FR016 – Tìm tài xế khác khi từ chối/không phản hồi | UC003, UC004                     | AC08, AC09 |
+| BG002                                       | BR02                                        | FR017 – Thông báo khi không tìm được tài xế        | UC003 – Tìm và phân công tài xế  | AC10       |
+| BG003 – Hỗ trợ theo dõi chuyến đi           | BR03 – Theo dõi trạng thái chuyến           | FR024 – Theo dõi trạng thái chuyến                 | UC006 – Theo dõi chuyến          | AC12       |
+| BG003                                       | BR03                                        | FR025 – Hiển thị tài xế và ETA                     | UC006 – Theo dõi chuyến          | AC12       |
+| BG003                                       | BR03                                        | FR023 – Ghi nhận vị trí tài xế                     | UC006 – Theo dõi chuyến          | AC13       |
+| BG004 – Quản lý và thực hiện chuyến         | BR04 – Cho phép tài xế thực hiện chuyến     | FR019–FR022 – Cập nhật trạng thái chuyến           | UC005 – Thực hiện chuyến         | AC11       |
+| BG004                                       | BR04                                        | FR023 – Cập nhật vị trí                            | UC005 – Thực hiện chuyến         | AC13       |
+| BG005 – Tính cước và thanh toán             | BR05 – Hỗ trợ tính cước                     | FR027 – Tính số tiền phải trả                      | UC007 – Tính cước                | AC14       |
+| BG005                                       | BR05                                        | FR028 – Chọn phương thức thanh toán                | UC008 – Thanh toán               | AC15       |
+| BG005                                       | BR05                                        | FR029 – Gửi thanh toán điện tử                     | UC008 – Thanh toán               | AC15, AC16 |
+| BG005                                       | BR05                                        | FR030 – Nhận kết quả giao dịch                     | UC008 – Thanh toán               | AC16, AC17 |
+| BG005                                       | BR05                                        | FR032 – Xử lý lại thanh toán thất bại              | UC008 – Thanh toán               | AC17       |
+| BG005                                       | BR05                                        | FR033 – Không lưu dữ liệu thanh toán nhạy cảm      | UC008 – Thanh toán               | AC18       |
+| BG006 – Quản lý thông báo                   | BR06 – Gửi thông báo tập trung              | FR034–FR038 – Thông báo các sự kiện chuyến         | UC009 – Gửi thông báo            | AC19       |
+| BG006                                       | BR06                                        | FR039 – Thông báo cho tài xế                       | UC009 – Gửi thông báo            | AC20       |
+| BG006                                       | BR06                                        | FR040 – Mở rộng kênh thông báo                     | UC009 – Gửi thông báo            | AC19, AC20 |
+| BG007 – Hỗ trợ quản lý vận hành             | BR07 – Quản lý hoạt động vận hành           | FR044 – Quản lý khách hàng                         | UC011 – Quản lý vận hành         | AC22       |
+| BG007                                       | BR07                                        | FR045 – Quản lý tài xế                             | UC011 – Quản lý vận hành         | AC22       |
+| BG007                                       | BR07                                        | FR046 – Quản lý phương tiện                        | UC011 – Quản lý vận hành         | AC22       |
+| BG007                                       | BR07                                        | FR047–FR049 – Theo dõi và xử lý sự cố              | UC011 – Quản lý vận hành         | AC22       |
+| BG007                                       | BR07                                        | FR050 – Tra cứu lịch sử giao dịch                  | UC011 – Quản lý vận hành         | AC22       |
+| BG008 – Báo cáo và hiệu quả kinh doanh      | BR08 – Cung cấp báo cáo                     | FR053 – Báo cáo số lượng chuyến                    | UC012 – Xem báo cáo              | AC25       |
+| BG008                                       | BR08                                        | FR054 – Báo cáo doanh thu                          | UC012 – Xem báo cáo              | AC25       |
+| BG008                                       | BR08                                        | FR055 – Báo cáo hoàn thành/hủy                     | UC012 – Xem báo cáo              | AC25       |
+| BG008                                       | BR08                                        | FR056 – Báo cáo hiệu quả tài xế                    | UC012 – Xem báo cáo              | AC25       |
+| BG009 – An toàn và bảo mật                  | BR09 – Bảo vệ dữ liệu và kiểm soát truy cập | FR051 – Phân quyền                                 | UC011 – Quản lý vận hành         | AC23       |
+| BG009                                       | BR09                                        | FR052 – Lưu nhật ký thao tác                       | UC011 – Quản lý vận hành         | AC24       |
+| BG009                                       | BR09                                        | FR033 – Bảo vệ thông tin thanh toán                | UC008 – Thanh toán               | AC18       |
+| BG010 – Khả năng mở rộng                    | BR10 – Hỗ trợ phát triển mở rộng            | FR057 – Thêm loại dịch vụ                          | UC – Quản lý dịch vụ             | AC27       |
+| BG010                                       | BR10                                        | FR058 – Thêm phương thức thanh toán/NCC            | UC008 – Thanh toán               | AC27       |
+| BG010                                       | BR10                                        | FR040 – Thêm kênh thông báo                        | UC009 – Gửi thông báo            | AC27       |
+| BG011 – Ổn định và liên tục                 | BR11 – Hạn chế ảnh hưởng dây chuyền         | FR059 – Cô lập lỗi giữa các thành phần             | UC003/UC008/UC009                | AC26       |
+| BG011                                       | BR11                                        | FR060 – Triển khai chức năng từng phần             | Hệ thống                         | AC27       |
+
+
