@@ -105,7 +105,8 @@ Xác định phạm vi
 | **Hệ thống của nhà cung cấp thanh toán**            | CAB chỉ tích hợp và nhận kết quả giao dịch, không xây dựng hệ thống thanh toán bên ngoài. |
 | **Hệ thống cung cấp dịch vụ thông báo bên ngoài**   | CAB tích hợp với nhà cung cấp nhưng không xây dựng hạ tầng của nhà cung cấp.              |
 
-Xác định Bussiness Requirement:
+Bước 5:Xác định Bussiness Requirement:
+
 | **Business Requirement**                    | **Diễn giải**                                                                                                                                                                                     |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **BR01: Đặt xe trực tuyến**                 | Hệ thống phải hỗ trợ khách hàng tạo yêu cầu đặt xe bằng cách nhập điểm đón, điểm đến và lựa chọn loại xe phù hợp.                                                                                 |
@@ -125,6 +126,21 @@ Xác định Bussiness Requirement:
 | **BR15: Bảo mật và lưu vết**                | Hệ thống phải bảo vệ thông tin cá nhân, dữ liệu vị trí và dữ liệu giao dịch, đồng thời lưu vết các thao tác quan trọng để phục vụ kiểm tra.                                                       |
 | **BR16: Khả năng mở rộng**                  | Hệ thống phải có khả năng phục vụ số lượng lớn khách hàng và tài xế, đồng thời cho phép bổ sung dịch vụ, phương thức thanh toán và kênh thông báo mới mà hạn chế ảnh hưởng đến hệ thống hiện tại. |
 | **BR17: Đảm bảo tính liên tục của dịch vụ** | Hệ thống phải hạn chế việc lỗi tại một thành phần như thanh toán hoặc thông báo làm ảnh hưởng đến toàn bộ chức năng đặt xe.                                                                       |
+Bước 6: Xác định Bussiness Process
 
-
-
+BP01 – Đăng ký và quản lý tài khoản
+flowchart TD
+    A([Bắt đầu]) --> B{Người dùng là ai?}
+    B -->|Khách hàng| C[Khách hàng đăng ký tài khoản]
+    B -->|Tài xế| D[Tài xế đăng ký tài khoản]
+    C --> E[Nhập thông tin cá nhân]
+    D --> F[Nhập thông tin cá nhân và phương tiện]
+    E --> G[Hệ thống kiểm tra thông tin]
+    F --> G
+    G --> H{Thông tin hợp lệ?}
+    H -->|Không| I[Thông báo lỗi]
+    I --> E
+    H -->|Có| J[Tạo tài khoản]
+    J --> K[Đăng nhập]
+    K --> L[Cập nhật hồ sơ khi cần]
+    L --> M([Kết thúc])
