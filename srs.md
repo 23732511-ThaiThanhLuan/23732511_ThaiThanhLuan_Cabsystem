@@ -126,6 +126,8 @@ Bước 5:Xác định Bussiness Requirement:
 | **BR15: Bảo mật và lưu vết**                | Hệ thống phải bảo vệ thông tin cá nhân, dữ liệu vị trí và dữ liệu giao dịch, đồng thời lưu vết các thao tác quan trọng để phục vụ kiểm tra.                                                       |
 | **BR16: Khả năng mở rộng**                  | Hệ thống phải có khả năng phục vụ số lượng lớn khách hàng và tài xế, đồng thời cho phép bổ sung dịch vụ, phương thức thanh toán và kênh thông báo mới mà hạn chế ảnh hưởng đến hệ thống hiện tại. |
 | **BR17: Đảm bảo tính liên tục của dịch vụ** | Hệ thống phải hạn chế việc lỗi tại một thành phần như thanh toán hoặc thông báo làm ảnh hưởng đến toàn bộ chức năng đặt xe.                                                                       |
+
+
 Bước 6: Xác định Bussiness Process
 
 BP01 – Đăng ký và quản lý tài khoản
@@ -147,3 +149,38 @@ flowchart TD
     K --> L[Cập nhật hồ sơ khi cần]
     L --> M([Kết thúc])
 ```
+BP02 – Đặt xe và tìm tài xế
+
+```mermaid
+flowchart TD
+    A([Khách hàng bắt đầu]) --> B[Đăng nhập]
+    B --> C[Nhập điểm đón]
+    C --> D[Nhập điểm đến]
+    D --> E[Chọn loại xe]
+    E --> F[Gửi yêu cầu đặt xe]
+    F --> G[Hệ thống tiếp nhận yêu cầu]
+    G --> H[Thông báo yêu cầu đã được tiếp nhận]
+    H --> I[Xác định tài xế phù hợp]
+    I --> J{Có tài xế phù hợp?}
+
+    J -->|Không| K[Thông báo không tìm được tài xế]
+    K --> Z([Kết thúc])
+
+    J -->|Có| L[Ưu tiên tài xế phù hợp và gần khách hàng]
+    L --> M[Gửi yêu cầu cho tài xế]
+    M --> N[Chờ tài xế phản hồi]
+    N --> O{Tài xế phản hồi?}
+
+    O -->|Không| P[Hết thời gian phản hồi]
+    P --> Q[Chuyển sang tài xế khác]
+    Q --> I
+
+    O -->|Có| R{Tài xế chấp nhận?}
+    R -->|Không| S[Tài xế từ chối]
+    S --> Q
+
+    R -->|Có| T[Xác nhận tài xế nhận chuyến]
+    T --> U[Thông báo tài xế cho khách hàng]
+    U --> V([Chuyển sang thực hiện chuyến])
+```
+
