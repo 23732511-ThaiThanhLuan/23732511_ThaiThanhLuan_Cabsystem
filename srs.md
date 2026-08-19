@@ -236,6 +236,126 @@ flowchart TD
     I --> P[Thông báo kết quả thanh toán]
     P --> Q([Kết thúc])
 ```
+BP05 – Thông báo
+```mermaid
+flowchart TD
+    A([Có sự kiện trong hệ thống]) --> B{Loại sự kiện?}
+
+    B -->|Đặt xe| C[Thông báo yêu cầu đã được tiếp nhận]
+    B -->|Tài xế nhận| D[Thông báo tài xế đã nhận chuyến]
+    B -->|Tài xế đến| E[Thông báo tài xế đã đến điểm đón]
+    B -->|Hoàn thành| F[Thông báo chuyến đã hoàn thành]
+    B -->|Thanh toán| G[Thông báo kết quả thanh toán]
+    B -->|Chuyến mới| H[Thông báo chuyến mới cho tài xế]
+    B -->|Thay đổi chuyến| I[Thông báo thay đổi cho tài xế]
+
+    C --> J[Gửi qua kênh thông báo]
+    D --> J
+    E --> J
+    F --> J
+    G --> J
+    H --> J
+    I --> J
+
+    J --> K{Gửi thành công?}
+    K -->|Có| L([Kết thúc])
+    K -->|Không| M[Xử lý lỗi gửi thông báo]
+    M --> N[Thử lại hoặc chuyển kênh khác]
+    N --> L
+```
+BP06 – Đánh giá tài xế
+```mermaid
+flowchart TD
+    A([Chuyến đi hoàn thành]) --> B[Thông báo khách hàng đánh giá]
+    B --> C{Khách hàng đánh giá?}
+    C -->|Không| D[Không ghi nhận đánh giá]
+    D --> Z([Kết thúc])
+
+    C -->|Có| E[Khách hàng nhập đánh giá]
+    E --> F[Hệ thống kiểm tra đánh giá]
+    F --> G{Dữ liệu hợp lệ?}
+    G -->|Không| H[Thông báo lỗi]
+    H --> E
+    G -->|Có| I[Lưu đánh giá tài xế]
+    I --> J[Cập nhật dữ liệu đánh giá]
+    J --> Z([Kết thúc])
+```
+
+BP07 – Quản lý vận hành
+```mermaid
+flowchart TD
+    A([Nhân viên vận hành đăng nhập]) --> B[Xác thực tài khoản]
+    B --> C{Có quyền truy cập?}
+
+    C -->|Không| D[Từ chối truy cập]
+    D --> Z([Kết thúc])
+
+    C -->|Có| E[Truy cập giao diện quản trị]
+    E --> F{Cần thực hiện chức năng nào?}
+
+    F -->|Quản lý khách hàng| G[Tra cứu / cập nhật khách hàng]
+    F -->|Quản lý tài xế| H[Tra cứu / cập nhật tài xế]
+    F -->|Quản lý phương tiện| I[Tra cứu / cập nhật phương tiện]
+    F -->|Theo dõi chuyến| J[Xem các chuyến đang diễn ra]
+    F -->|Xử lý sự cố| K[Kiểm tra và xử lý chuyến bị lỗi]
+    F -->|Tra cứu giao dịch| L[Xem lịch sử giao dịch]
+
+    G --> M[Lưu thay đổi]
+    H --> M
+    I --> M
+    J --> N[Cập nhật thông tin]
+    K --> M
+    L --> N
+
+    M --> O[Ghi nhận audit log]
+    N --> O
+    O --> P([Kết thúc])
+```
+BP08 – Báo cáo hoạt động
+```mermaid
+flowchart TD
+    A([Quản lý yêu cầu báo cáo]) --> B[Chọn loại báo cáo]
+    B --> C{Loại báo cáo?}
+
+    C -->|Số lượng chuyến| D[Thu thập dữ liệu chuyến]
+    C -->|Doanh thu| E[Thu thập dữ liệu giao dịch]
+    C -->|Tỷ lệ hoàn thành| F[Thu thập dữ liệu trạng thái chuyến]
+    C -->|Tỷ lệ hủy| G[Thu thập dữ liệu hủy chuyến]
+    C -->|Hiệu quả tài xế| H[Thu thập dữ liệu tài xế]
+
+    D --> I[Tổng hợp dữ liệu]
+    E --> I
+    F --> I
+    G --> I
+    H --> I
+
+    I --> J[Phân tích dữ liệu]
+    J --> K[Hiển thị báo cáo]
+    K --> L([Kết thúc])
+```
+BP09 – Quản lý lỗi và ngoại lệ
+```mermaid
+flowchart TD
+    A([Phát sinh lỗi]) --> B{Loại lỗi?}
+
+    B -->|Không tìm được tài xế| C[Thông báo khách hàng]
+    B -->|Tài xế từ chối| D[Tìm tài xế khác]
+    B -->|Thanh toán thất bại| E[Thông báo khách hàng]
+    B -->|Thông báo thất bại| F[Thử lại / chuyển kênh]
+    B -->|Chuyến bị lỗi| G[Thông báo nhân viên vận hành]
+    B -->|Mất kết nối| H[Xử lý theo chính sách mất kết nối]
+
+    C --> I[Ghi nhận sự kiện]
+    D --> I
+    E --> I
+    F --> I
+    G --> J[Nhân viên vận hành xử lý]
+    H --> I
+
+    J --> I
+    I --> K[Ghi audit log]
+    K --> L([Kết thúc])
+```
 Bước 7: 
 
 
