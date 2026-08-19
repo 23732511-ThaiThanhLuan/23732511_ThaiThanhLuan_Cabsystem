@@ -1,5 +1,5 @@
 
-Bước 1:
+Bước 1: Xác định ngữ cảnh nghiệp vụ và Bussiness Problem
 
 1. Ngữ cảnh nghiệp vụ
 
@@ -26,6 +26,7 @@ Bước 2:
 
 
 Ma trận stakeholder:
+
 
                          MỨC ĐỘ QUAN TÂM
                   THẤP                     CAO
@@ -121,5 +122,27 @@ Xác định phạm vi
 | **Thông tin nhạy cảm của thẻ/tài khoản thanh toán** | **Không lưu trực tiếp trên CAB**; do nhà cung cấp thanh toán bên ngoài xử lý.             |
 | **Hệ thống của nhà cung cấp thanh toán**            | CAB chỉ tích hợp và nhận kết quả giao dịch, không xây dựng hệ thống thanh toán bên ngoài. |
 | **Hệ thống cung cấp dịch vụ thông báo bên ngoài**   | CAB tích hợp với nhà cung cấp nhưng không xây dựng hạ tầng của nhà cung cấp.              |
+
+Xác định Bussiness Requirement:
+| **Business Requirement**                    | **Diễn giải**                                                                                                                                                                                     |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BR01: Đặt xe trực tuyến**                 | Hệ thống phải hỗ trợ khách hàng tạo yêu cầu đặt xe bằng cách nhập điểm đón, điểm đến và lựa chọn loại xe phù hợp.                                                                                 |
+| **BR02: Tìm và phân công tài xế**           | Hệ thống phải tự động tìm và phân công tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành.                                                                              |
+| **BR03: Theo dõi chuyến đi**                | Hệ thống phải cho phép khách hàng theo dõi trạng thái yêu cầu và chuyến đi, thông tin tài xế và thời gian dự kiến tài xế đến.                                                                     |
+| **BR04: Quản lý chuyến đi**                 | Hệ thống phải hỗ trợ tài xế nhận hoặc từ chối chuyến và cập nhật các trạng thái trong quá trình thực hiện chuyến.                                                                                 |
+| **BR05: Quản lý vị trí tài xế**             | Hệ thống phải ghi nhận thông tin vị trí của tài xế để hỗ trợ tìm tài xế gần khách hàng và dự kiến thời gian đến.                                                                                  |
+| **BR06: Tính cước chuyến đi**               | Hệ thống phải xác định số tiền khách hàng cần thanh toán dựa trên loại dịch vụ và thông tin chuyến đi.                                                                                            |
+| **BR07: Thanh toán**                        | Hệ thống phải hỗ trợ thanh toán bằng tiền mặt và phương thức điện tử thông qua nhà cung cấp thanh toán bên ngoài, đồng thời xử lý trường hợp giao dịch thất bại.                                  |
+| **BR08: Quản lý thông báo**                 | Hệ thống phải gửi thông báo cho khách hàng và tài xế về các sự kiện quan trọng như tạo yêu cầu, nhận chuyến, tài xế đến, hoàn thành chuyến và kết quả thanh toán.                                 |
+| **BR09: Đánh giá tài xế**                   | Hệ thống phải cho phép khách hàng đánh giá tài xế sau khi chuyến đi hoàn thành.                                                                                                                   |
+| **BR10: Quản lý tài khoản và hồ sơ**        | Hệ thống phải hỗ trợ quản lý thông tin tài khoản, hồ sơ khách hàng, tài xế và thông tin phương tiện.                                                                                              |
+| **BR11: Quản lý vận hành**                  | Hệ thống phải cung cấp giao diện để nhân viên vận hành quản lý khách hàng, tài xế, phương tiện, chuyến đi và hỗ trợ xử lý các trường hợp bất thường.                                              |
+| **BR12: Phân quyền quản trị**               | Hệ thống phải kiểm soát quyền truy cập để đảm bảo nhân viên chỉ được thực hiện các chức năng phù hợp với quyền hạn.                                                                               |
+| **BR13: Quản lý lịch sử và giao dịch**      | Hệ thống phải lưu trữ và cho phép tra cứu lịch sử chuyến đi, thông tin thanh toán và giao dịch phục vụ vận hành và kiểm tra.                                                                      |
+| **BR14: Báo cáo hoạt động**                 | Hệ thống phải cung cấp báo cáo về số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế.                                                                       |
+| **BR15: Bảo mật và lưu vết**                | Hệ thống phải bảo vệ thông tin cá nhân, dữ liệu vị trí và dữ liệu giao dịch, đồng thời lưu vết các thao tác quan trọng để phục vụ kiểm tra.                                                       |
+| **BR16: Khả năng mở rộng**                  | Hệ thống phải có khả năng phục vụ số lượng lớn khách hàng và tài xế, đồng thời cho phép bổ sung dịch vụ, phương thức thanh toán và kênh thông báo mới mà hạn chế ảnh hưởng đến hệ thống hiện tại. |
+| **BR17: Đảm bảo tính liên tục của dịch vụ** | Hệ thống phải hạn chế việc lỗi tại một thành phần như thanh toán hoặc thông báo làm ảnh hưởng đến toàn bộ chức năng đặt xe.                                                                       |
+
 
 
