@@ -600,3 +600,18 @@ flowchart LR
     Customer --- UC9
     Customer --- UC10
 ```
+
+Đặc tả use case:
+UC001 – Đăng ký tài khoản khách hàng
+
+| **Thuộc tính**     | **Đặc tả**                                                                                                                                                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Use Case ID**    | UC001                                                                                                                                                                                                                          |
+| **Tên**            | Đăng ký tài khoản khách hàng                                                                                                                                                                                                   |
+| **Actor**          | Khách hàng                                                                                                                                                                                                                     |
+| **Mục tiêu**       | Cho phép khách hàng tạo tài khoản để sử dụng các chức năng của hệ thống CAB.                                                                                                                                                   |
+| **Tiền điều kiện** | Khách hàng chưa có tài khoản hợp lệ.                                                                                                                                                                                           |
+| **Hậu điều kiện**  | Tài khoản khách hàng được tạo thành công và có thể đăng nhập.                                                                                                                                                                  |
+| **Luồng chính**    | 1. Khách hàng chọn đăng ký.<br>2. Hệ thống hiển thị biểu mẫu đăng ký.<br>3. Khách hàng nhập thông tin cá nhân.<br>4. Hệ thống kiểm tra tính hợp lệ.<br>5. Hệ thống tạo tài khoản.<br>6. Hệ thống thông báo đăng ký thành công. |
+| **Ngoại lệ**       | Nếu thông tin không hợp lệ → hệ thống thông báo lỗi và yêu cầu nhập lại.<br>Nếu email/số điện thoại đã tồn tại → hệ thống thông báo tài khoản đã tồn tại.                                                                      |
+
