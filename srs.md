@@ -25,17 +25,24 @@ Bước 2:
 | **Đội phát triển / IT**            | Phân tích, xây dựng và triển khai hệ thống; quan tâm đến yêu cầu rõ ràng, khả năng mở rộng, tích hợp và bảo trì hệ thống.                                              |
 
 
-Ma trận stakeholder
-| Stakeholder                        | Mức độ ảnh hưởng | Mức độ quan tâm | Nhóm                  | Chiến lược quản lý                                                                      |
-| ---------------------------------- | ---------------- | --------------- | --------------------- | --------------------------------------------------------------------------------------- |
-| **Ban giám đốc / Lãnh đạo ABC**    | Cao              | Cao             | 🟥 **Manage Closely** | Thường xuyên trao đổi, xác nhận mục tiêu, phạm vi, ưu tiên và các quyết định quan trọng |
-| **Quản lý vận hành**               | Cao              | Cao             | 🟥 **Manage Closely** | Làm việc thường xuyên để xác định quy trình, business rules và các vấn đề vận hành      |
-| **Nhân viên vận hành**             | Trung bình       | Cao             | 🟧 **Keep Informed**  | Thu thập yêu cầu, quan sát quy trình thực tế, lấy phản hồi và cập nhật thay đổi         |
-| **Khách hàng**                     | Trung bình       | Cao             | 🟧 **Keep Informed**  | Khảo sát/phỏng vấn nhu cầu, kiểm thử trải nghiệm và thu thập phản hồi                   |
-| **Tài xế**                         | Trung bình       | Cao             | 🟧 **Keep Informed**  | Tìm hiểu quy trình nhận chuyến, cập nhật trạng thái, vị trí và các khó khăn thực tế     |
-| **Quản trị hệ thống**              | Cao              | Trung bình      | 🟨 **Keep Satisfied** | Tham vấn về phân quyền, bảo mật, cấu hình và vận hành hệ thống                          |
-| **Bộ phận tài chính/kế toán**      | Trung bình       | Trung bình      | 🟨 **Keep Satisfied** | Xác định yêu cầu về thanh toán, doanh thu, giao dịch và đối soát                        |
-| **Nhà cung cấp thanh toán**        | Cao              | Trung bình      | 🟨 **Keep Satisfied** | Phối hợp về API, trạng thái giao dịch, lỗi thanh toán và bảo mật                        |
-| **Nhà cung cấp thông báo**         | Trung bình       | Trung bình      | 🟩 **Monitor**        | Phối hợp khi tích hợp và khi có thay đổi về kênh thông báo                              |
-| **Đội phát triển hệ thống**        | Cao              | Cao             | 🟥 **Manage Closely** | Trao đổi yêu cầu, tính khả thi, ưu tiên và các thay đổi trong quá trình phát triển      |
-| **Bộ phận IT / vận hành hệ thống** | Cao              | Cao             | 🟥 **Manage Closely** | Thống nhất yêu cầu về hiệu năng, khả năng mở rộng, bảo mật và giám sát                  |
+Ma trận stakeholder:
+
+                         MỨC ĐỘ QUAN TÂM
+                  THẤP                     CAO
+              ┌─────────────────────┬─────────────────────┐
+        CAO   │                     │  MANAGE CLOSELY     │
+              │  KEEP SATISFIED     │                     │
+QUYỀN         │ • Nhà cung cấp      │ • Ban giám đốc      │
+LỰC           │   thanh toán        │ • Nhân viên vận hành│
+              │ • Nhà cung cấp      │                     │
+              │   thông báo         │                     │
+              ├─────────────────────┼─────────────────────┤
+        THẤP  │                     │  KEEP INFORMED      │
+              │  MONITOR            │                     │
+              │ • Tài chính/kế toán │ • Khách hàng        │
+              │ • Đội IT/Phát triển │ • Tài xế            │
+              │                     │ • Business Analyst  │
+              └─────────────────────┴─────────────────────┘
+
+Bước 3:
+Bussiness Goal của khách hàng:
