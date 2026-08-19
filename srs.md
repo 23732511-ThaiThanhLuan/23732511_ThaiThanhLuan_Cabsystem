@@ -513,3 +513,62 @@ Bước 10: Xác định Non-Bussiness Requirement
 | **NBR019** | **Khả năng tương thích**         | Hệ thống phải hỗ trợ các môi trường và thiết bị cần thiết để khách hàng, tài xế và nhân viên vận hành sử dụng các chức năng được cung cấp.      |
 | **NBR020** | **Khả năng phục vụ tải cao**     | Hệ thống phải duy trì hoạt động khi nhu cầu đặt xe tăng đột biến, đặc biệt trong các thời điểm cao điểm.                                        |
 
+
+Bước 11:
+Vẽ UC
+
+1. Use Case tổng quan
+```mermaid
+flowchart LR
+    Customer([Khách hàng])
+    Driver([Tài xế])
+    Employee([Nhân viên vận hành])
+    Manager([Quản lý / Ban giám đốc])
+    Payment([Nhà cung cấp thanh toán])
+    Notification([Nhà cung cấp thông báo])
+
+    UC1((Quản lý tài khoản))
+    UC2((Đặt xe))
+    UC3((Theo dõi chuyến đi))
+    UC4((Quản lý chuyến đi))
+    UC5((Tìm và phân công tài xế))
+    UC6((Tính cước))
+    UC7((Thanh toán))
+    UC8((Nhận thông báo))
+    UC9((Đánh giá tài xế))
+    UC10((Quản lý khách hàng))
+    UC11((Quản lý tài xế))
+    UC12((Quản lý phương tiện))
+    UC13((Theo dõi vận hành))
+    UC14((Xử lý sự cố))
+    UC15((Tra cứu giao dịch))
+    UC16((Xem báo cáo))
+    UC17((Quản lý phân quyền))
+    UC18((Lưu vết thao tác))
+
+    Customer --- UC1
+    Customer --- UC2
+    Customer --- UC3
+    Customer --- UC7
+    Customer --- UC8
+    Customer --- UC9
+
+    Driver --- UC1
+    Driver --- UC4
+    Driver --- UC5
+    Driver --- UC8
+
+    Employee --- UC10
+    Employee --- UC11
+    Employee --- UC12
+    Employee --- UC13
+    Employee --- UC14
+    Employee --- UC15
+    Employee --- UC17
+    Employee --- UC18
+
+    Manager --- UC16
+
+    UC7 --- Payment
+    UC8 --- Notification
+```
