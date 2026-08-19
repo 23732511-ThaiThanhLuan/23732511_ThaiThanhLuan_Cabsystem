@@ -184,6 +184,7 @@ flowchart TD
     U --> V([Chuyển sang thực hiện chuyến])
 ```
 
+BP03 – Thực hiện và theo dõi chuyến đi
 ```mermaid
 flowchart TD
     A([Tài xế nhận chuyến]) --> B[Cập nhật trạng thái đang đến]
@@ -205,6 +206,35 @@ flowchart TD
     M -->|Có| N[Hoàn thành chuyến]
     N --> O[Thông báo chuyến đã hoàn thành]
     O --> P([Kết thúc])
+```
+
+BP04 – Tính cước và thanh toán
+```mermaid
+flowchart TD
+    A([Chuyến đi hoàn thành]) --> B[Thu thập thông tin chuyến đi]
+    B --> C[Xác định loại dịch vụ]
+    C --> D[Tính số tiền phải trả]
+    D --> E[Thông báo số tiền cho khách hàng]
+    E --> F{Phương thức thanh toán?}
+
+    F -->|Tiền mặt| G[Khách hàng thanh toán tiền mặt]
+    G --> H[Xác nhận thanh toán]
+    H --> I[Lưu giao dịch]
+
+    F -->|Điện tử| J[Gửi yêu cầu đến nhà cung cấp thanh toán]
+    J --> K{Thanh toán thành công?}
+
+    K -->|Có| L[Nhận kết quả thanh toán]
+    L --> I
+
+    K -->|Không| M[Thông báo thanh toán thất bại]
+    M --> N{Cho phép thanh toán lại?}
+    N -->|Có| J
+    N -->|Không| O[Xử lý theo chính sách doanh nghiệp]
+    O --> I
+
+    I --> P[Thông báo kết quả thanh toán]
+    P --> Q([Kết thúc])
 ```
 Bước 7: 
 
