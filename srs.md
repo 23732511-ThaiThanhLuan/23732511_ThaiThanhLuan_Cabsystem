@@ -81,3 +81,42 @@ Mục đích: Xây dựng nền tảng có thể phục vụ số lượng lớn
 
 BG011: Đảm bảo tính ổn định và liên tục của hệ thống
 Mục đích: Hạn chế việc lỗi ở một chức năng như thanh toán hoặc thông báo ảnh hưởng đến toàn bộ hệ thống đặt xe, đồng thời cho phép triển khai các chức năng mới từng phần mà ít ảnh hưởng đến hệ thống đang hoạt động.
+
+Bước 4: 
+Xác định phạm vi
+
+1. In Scope – Trong phạm vi
+| **Nhóm**                | **Phạm vi hệ thống CAB**                                                                                                                      |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Quản lý tài khoản**   | Đăng ký, đăng nhập, cập nhật thông tin khách hàng và tài xế; xác thực người dùng.                                                             |
+| **Đặt xe**              | Nhập điểm đón, điểm đến, lựa chọn loại xe, tạo và tiếp nhận yêu cầu đặt xe.                                                                   |
+| **Tìm tài xế**          | Xác định tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và tiêu chí vận hành; tự động tìm tài xế khác khi tài xế từ chối/không phản hồi. |
+| **Quản lý tài xế**      | Quản lý hồ sơ, phương tiện, trạng thái hoạt động và khả năng nhận chuyến của tài xế.                                                          |
+| **Quản lý chuyến đi**   | Nhận chuyến, cập nhật trạng thái: đã đến điểm đón → đã đón khách → đang di chuyển → hoàn thành; lưu thông tin chuyến đi.                      |
+| **Theo dõi vị trí**     | Ghi nhận vị trí tài xế để hỗ trợ tìm tài xế gần khách và dự kiến thời gian đến.                                                               |
+| **Theo dõi chuyến**     | Khách hàng theo dõi trạng thái yêu cầu/chuyến đi, tài xế và thời gian dự kiến đến.                                                            |
+| **Tính cước**           | Xác định số tiền phải trả dựa trên loại dịch vụ và thông tin chuyến đi.                                                                       |
+| **Thanh toán**          | Hỗ trợ tiền mặt và thanh toán điện tử; tích hợp nhà cung cấp thanh toán bên ngoài; xử lý giao dịch thất bại.                                  |
+| **Thông báo**           | Thông báo cho khách hàng/tài xế về yêu cầu đặt xe, nhận chuyến, tài xế đến, hoàn thành chuyến và kết quả thanh toán.                          |
+| **Đánh giá**            | Cho phép khách hàng đánh giá tài xế sau khi hoàn thành chuyến.                                                                                |
+| **Quản trị vận hành**   | Nhân viên quản lý khách hàng, tài xế, phương tiện, chuyến đi, trạng thái tài xế và các trường hợp lỗi.                                        |
+| **Phân quyền**          | Kiểm soát quyền truy cập các chức năng quản trị và thao tác nhạy cảm.                                                                         |
+| **Lịch sử & giao dịch** | Tra cứu lịch sử chuyến đi và lịch sử giao dịch.                                                                                               |
+| **Báo cáo**             | Báo cáo số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động tài xế.                                                 |
+| **Bảo mật & Audit**     | Bảo vệ dữ liệu cá nhân, vị trí, giao dịch và lưu vết các thao tác quan trọng.                                                                 |
+| **Khả năng mở rộng**    | Thiết kế nền tảng cho phép mở rộng số lượng người dùng và bổ sung dịch vụ, phương thức thanh toán, kênh thông báo mới.                        |
+
+2. Out of Scope / Chưa xác định – Ngoài hoặc chưa thuộc phạm vi hiện tại
+| **Nội dung**                                        | **Trạng thái**                                                                            |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Chi tiết công thức tính cước**                    | Chưa xác định, cần BA làm rõ với khách hàng.                                              |
+| **Tiêu chí và thuật toán ưu tiên tài xế**           | Chưa chốt, cần xác nhận với doanh nghiệp.                                                 |
+| **Thời gian tài xế phải phản hồi**                  | Chưa xác định.                                                                            |
+| **Chính sách hủy chuyến**                           | Chưa xác định.                                                                            |
+| **Cách xử lý khi mất kết nối mạng**                 | Chưa xác định.                                                                            |
+| **Thời gian lưu trữ dữ liệu**                       | Chưa xác định.                                                                            |
+| **Thông tin nhạy cảm của thẻ/tài khoản thanh toán** | **Không lưu trực tiếp trên CAB**; do nhà cung cấp thanh toán bên ngoài xử lý.             |
+| **Hệ thống của nhà cung cấp thanh toán**            | CAB chỉ tích hợp và nhận kết quả giao dịch, không xây dựng hệ thống thanh toán bên ngoài. |
+| **Hệ thống cung cấp dịch vụ thông báo bên ngoài**   | CAB tích hợp với nhà cung cấp nhưng không xây dựng hạ tầng của nhà cung cấp.              |
+
+
