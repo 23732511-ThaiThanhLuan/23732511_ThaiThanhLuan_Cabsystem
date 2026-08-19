@@ -184,6 +184,28 @@ flowchart TD
     U --> V([Chuyển sang thực hiện chuyến])
 ```
 
+```mermaid
+flowchart TD
+    A([Tài xế nhận chuyến]) --> B[Cập nhật trạng thái đang đến]
+    B --> C[Theo dõi vị trí tài xế]
+    C --> D[Cập nhật thời gian dự kiến đến]
+    D --> E[Thông báo cho khách hàng]
+    E --> F{Tài xế đã đến điểm đón?}
+
+    F -->|Chưa| C
+    F -->|Có| G[Cập nhật trạng thái đã đến]
+    G --> H[Thông báo cho khách hàng]
+    H --> I[Đón khách]
+    I --> J[Cập nhật trạng thái đã đón khách]
+    J --> K[Đang di chuyển]
+    K --> L[Cập nhật vị trí trong chuyến đi]
+    L --> M{Đã đến điểm đến?}
+
+    M -->|Chưa| L
+    M -->|Có| N[Hoàn thành chuyến]
+    N --> O[Thông báo chuyến đã hoàn thành]
+    O --> P([Kết thúc])
+```
 Bước 7: 
 
 
