@@ -520,86 +520,98 @@ Vẽ UC
 1. Use Case tổng quan
 ```mermaid
 flowchart LR
-    Customer([Khách hàng])
-    Driver([Tài xế])
-    Employee([Nhân viên vận hành])
-    Manager([Quản lý / Ban giám đốc])
-    Payment([Nhà cung cấp thanh toán])
-    Notification([Nhà cung cấp thông báo])
 
-    UC1((Quản lý tài khoản))
-    UC2((Đặt xe))
-    UC3((Theo dõi chuyến đi))
-    UC4((Quản lý chuyến đi))
-    UC5((Tìm và phân công tài xế))
-    UC6((Tính cước))
-    UC7((Thanh toán))
-    UC8((Nhận thông báo))
-    UC9((Đánh giá tài xế))
-    UC10((Quản lý khách hàng))
-    UC11((Quản lý tài xế))
-    UC12((Quản lý phương tiện))
-    UC13((Theo dõi vận hành))
-    UC14((Xử lý sự cố))
-    UC15((Tra cứu giao dịch))
-    UC16((Xem báo cáo))
-    UC17((Quản lý phân quyền))
-    UC18((Lưu vết thao tác))
+    %% ===== ACTORS =====
+    Customer["👤 Khách hàng"]
+    Driver["👤 Tài xế"]
+    Employee["👤 Nhân viên vận hành"]
+    Manager["👤 Quản lý"]
+    Payment["🏢 Nhà cung cấp thanh toán"]
+    Notification["🏢 Nhà cung cấp thông báo"]
 
-    Customer --- UC1
-    Customer --- UC2
-    Customer --- UC3
-    Customer --- UC7
-    Customer --- UC8
-    Customer --- UC9
+    %% ===== SYSTEM =====
+    subgraph CAB["HỆ THỐNG CAB"]
+        
+        UC01(("Đăng ký / Đăng nhập"))
+        UC02(("Quản lý thông tin cá nhân"))
+        
+        UC03(("Đặt xe"))
+        UC04(("Tìm và phân công tài xế"))
+        UC05(("Theo dõi chuyến đi"))
+        UC06(("Xem lịch sử chuyến"))
+        
+        UC07(("Chấp nhận / Từ chối chuyến"))
+        UC08(("Cập nhật trạng thái chuyến"))
+        UC09(("Cập nhật vị trí"))
+        
+        UC10(("Tính cước"))
+        UC11(("Thanh toán"))
+        UC12(("Xử lý thanh toán thất bại"))
+        
+        UC13(("Gửi thông báo"))
+        UC14(("Đánh giá tài xế"))
+        
+        UC15(("Quản lý khách hàng"))
+        UC16(("Quản lý tài xế"))
+        UC17(("Quản lý phương tiện"))
+        UC18(("Theo dõi chuyến đang diễn ra"))
+        UC19(("Xử lý sự cố"))
+        UC20(("Tra cứu giao dịch"))
+        
+        UC21(("Quản lý phân quyền"))
+        UC22(("Xem nhật ký hệ thống"))
+        UC23(("Xem báo cáo"))
+    end
 
-    Driver --- UC1
-    Driver --- UC4
-    Driver --- UC5
-    Driver --- UC8
+    %% ===== CUSTOMER =====
+    Customer --- UC01
+    Customer --- UC02
+    Customer --- UC03
+    Customer --- UC05
+    Customer --- UC06
+    Customer --- UC11
+    Customer --- UC14
 
-    Employee --- UC10
-    Employee --- UC11
-    Employee --- UC12
-    Employee --- UC13
-    Employee --- UC14
+    %% ===== DRIVER =====
+    Driver --- UC01
+    Driver --- UC02
+    Driver --- UC07
+    Driver --- UC08
+    Driver --- UC09
+
+    %% ===== EMPLOYEE =====
     Employee --- UC15
+    Employee --- UC16
     Employee --- UC17
     Employee --- UC18
+    Employee --- UC19
+    Employee --- UC20
+    Employee --- UC21
+    Employee --- UC22
 
-    Manager --- UC16
+    %% ===== MANAGER =====
+    Manager --- UC23
 
-    UC7 --- Payment
-    UC8 --- Notification
+    %% ===== EXTERNAL SYSTEMS =====
+    Payment --- UC11
+    Notification --- UC13
+
+    %% ===== INTERNAL RELATIONSHIPS =====
+    UC03 -.->|include| UC04
+    UC03 -.->|include| UC13
+    
+    UC04 -.->|include| UC13
+    
+    UC08 -.->|include| UC13
+    
+    UC10 -.->|include| UC11
+    UC11 -.->|extend| UC12
+    
+    UC03 -.->|include| UC10
+    UC05 -.->|include| UC13
 ```
 
-2. Use Case của Khách hàng
-```mermaid
-flowchart LR
-    Customer([Khách hàng])
 
-    UC1((Đăng ký tài khoản))
-    UC2((Đăng nhập))
-    UC3((Cập nhật thông tin cá nhân))
-    UC4((Đặt xe))
-    UC5((Theo dõi chuyến đi))
-    UC6((Xem lịch sử chuyến đi))
-    UC7((Xem cước chuyến đi))
-    UC8((Thanh toán))
-    UC9((Đánh giá tài xế))
-    UC10((Nhận thông báo))
-
-    Customer --- UC1
-    Customer --- UC2
-    Customer --- UC3
-    Customer --- UC4
-    Customer --- UC5
-    Customer --- UC6
-    Customer --- UC7
-    Customer --- UC8
-    Customer --- UC9
-    Customer --- UC10
-```
 
 Đặc tả use case:
 UC001 – Đăng ký tài khoản khách hàng
@@ -614,4 +626,36 @@ UC001 – Đăng ký tài khoản khách hàng
 | **Hậu điều kiện**  | Tài khoản khách hàng được tạo thành công và có thể đăng nhập.                                                                                                                                                                  |
 | **Luồng chính**    | 1. Khách hàng chọn đăng ký.<br>2. Hệ thống hiển thị biểu mẫu đăng ký.<br>3. Khách hàng nhập thông tin cá nhân.<br>4. Hệ thống kiểm tra tính hợp lệ.<br>5. Hệ thống tạo tài khoản.<br>6. Hệ thống thông báo đăng ký thành công. |
 | **Ngoại lệ**       | Nếu thông tin không hợp lệ → hệ thống thông báo lỗi và yêu cầu nhập lại.<br>Nếu email/số điện thoại đã tồn tại → hệ thống thông báo tài khoản đã tồn tại.                                                                      |
+
+Bước 12: Xác định  Acceptance Criteria (AC)
+
+| **ID**   | **Acceptance Criteria**                                                                                                                                         |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **AC01** | Khách hàng có thể đăng ký tài khoản với thông tin hợp lệ và hệ thống tạo tài khoản thành công.                                                                  |
+| **AC02** | Khách hàng có thể đăng nhập bằng thông tin xác thực hợp lệ và truy cập các chức năng dành cho khách hàng.                                                       |
+| **AC03** | Khách hàng có thể nhập điểm đón, điểm đến và lựa chọn loại xe để tạo yêu cầu đặt xe.                                                                            |
+| **AC04** | Khi khách hàng gửi yêu cầu hợp lệ, hệ thống phải ghi nhận yêu cầu và thông báo rằng yêu cầu đã được tiếp nhận.                                                  |
+| **AC05** | Hệ thống phải xác định được danh sách tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành đã cấu hình.                                 |
+| **AC06** | Hệ thống phải ưu tiên tài xế phù hợp và gần điểm đón theo quy tắc vận hành.                                                                                     |
+| **AC07** | Khi tài xế nhận chuyến, hệ thống phải xác nhận chuyến cho tài xế và thông báo thông tin tài xế cho khách hàng.                                                  |
+| **AC08** | Khi tài xế từ chối chuyến, hệ thống phải tự động tiếp tục tìm tài xế khác mà khách hàng không cần tạo lại yêu cầu.                                              |
+| **AC09** | Khi tài xế không phản hồi trong thời gian quy định, hệ thống phải xem yêu cầu là không được chấp nhận và tiếp tục tìm tài xế khác.                              |
+| **AC10** | Khi không còn tài xế phù hợp, hệ thống phải thông báo rõ ràng cho khách hàng rằng không tìm được tài xế.                                                        |
+| **AC11** | Tài xế được phân công phải có thể cập nhật các trạng thái: đã đến điểm đón, đã đón khách, đang di chuyển và hoàn thành chuyến.                                  |
+| **AC12** | Khách hàng phải có thể xem trạng thái hiện tại của chuyến và thông tin tài xế được phân công.                                                                   |
+| **AC13** | Hệ thống phải ghi nhận vị trí tài xế trong quá trình hoạt động để hỗ trợ theo dõi và ước tính thời gian đến.                                                    |
+| **AC14** | Khi chuyến hoàn thành, hệ thống phải xác định và hiển thị số tiền khách hàng phải thanh toán theo chính sách tính cước.                                         |
+| **AC15** | Khách hàng phải có thể chọn thanh toán bằng tiền mặt hoặc phương thức thanh toán điện tử được hỗ trợ.                                                           |
+| **AC16** | Khi thanh toán điện tử thành công, hệ thống phải cập nhật trạng thái giao dịch thành công và thông báo cho khách hàng.                                          |
+| **AC17** | Khi thanh toán điện tử thất bại, hệ thống phải thông báo cho khách hàng và cho phép xử lý/thanh toán lại theo chính sách doanh nghiệp.                          |
+| **AC18** | Hệ thống không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.                                                                         |
+| **AC19** | Khách hàng phải nhận được thông báo khi yêu cầu được tiếp nhận, tài xế nhận chuyến, tài xế đến điểm đón, chuyến hoàn thành và thanh toán có kết quả.            |
+| **AC20** | Tài xế phải nhận được thông báo về chuyến mới và các thay đổi quan trọng liên quan đến chuyến đang thực hiện.                                                   |
+| **AC21** | Khách hàng chỉ có thể đánh giá tài xế sau khi chuyến đi hoàn thành.                                                                                             |
+| **AC22** | Nhân viên vận hành có thể tra cứu khách hàng, tài xế, phương tiện, chuyến đi và lịch sử giao dịch theo quyền được cấp.                                          |
+| **AC23** | Nhân viên không có quyền phải bị từ chối khi thực hiện các thao tác quản trị nhạy cảm.                                                                          |
+| **AC24** | Các thao tác quản trị quan trọng phải được hệ thống ghi nhận vào nhật ký để có thể truy vết.                                                                    |
+| **AC25** | Hệ thống phải cung cấp báo cáo về số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả hoạt động của tài xế.                                     |
+| **AC26** | Khi một thành phần như thanh toán hoặc thông báo gặp lỗi, chức năng đặt xe và các chức năng không liên quan vẫn phải tiếp tục hoạt động trong phạm vi thiết kế. |
+| **AC27** | Hệ thống phải cho phép bổ sung loại dịch vụ, phương thức thanh toán hoặc kênh thông báo mới mà không yêu cầu xây dựng lại toàn bộ hệ thống.                     |
 
