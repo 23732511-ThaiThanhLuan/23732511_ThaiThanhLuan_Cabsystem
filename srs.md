@@ -422,4 +422,47 @@ Bước 7:
 | **FR059** | Hệ thống phải cho phép các thành phần xử lý thanh toán, thông báo và đặt xe hoạt động độc lập để hạn chế ảnh hưởng dây chuyền khi một thành phần gặp lỗi. |
 | **FR060** | Hệ thống phải hỗ trợ triển khai chức năng mới từng phần mà hạn chế ảnh hưởng đến các chức năng đang hoạt động.                                            |
 
+Bước 8
+Xác định Bussiness Rules:
+| **ID**     | **Business Rule**                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **BRL001** | Chỉ khách hàng đã đăng nhập và được xác thực mới được phép tạo yêu cầu đặt xe.                                                           |
+| **BRL002** | Chỉ tài xế có tài khoản hợp lệ, đang hoạt động và ở trạng thái sẵn sàng mới được xem xét để nhận chuyến.                                 |
+| **BRL003** | Tài xế được lựa chọn phải đáp ứng các tiêu chí phù hợp về vị trí, trạng thái và loại phương tiện/dịch vụ.                                |
+| **BRL004** | Hệ thống phải ưu tiên tài xế phù hợp và gần điểm đón của khách hàng theo tiêu chí vận hành đã được doanh nghiệp xác định.                |
+| **BRL005** | Khi tài xế từ chối chuyến, hệ thống phải tiếp tục tìm tài xế khác mà không yêu cầu khách hàng tạo lại yêu cầu.                           |
+| **BRL006** | Khi tài xế không phản hồi trong thời gian quy định, hệ thống phải xem yêu cầu là không được chấp nhận và chuyển sang tìm tài xế khác.    |
+| **BRL007** | Một chuyến chỉ được xác nhận khi có một tài xế chấp nhận chuyến thành công.                                                              |
+| **BRL008** | Sau khi tài xế nhận chuyến, yêu cầu đó không được tiếp tục gửi đồng thời cho các tài xế khác.                                            |
+| **BRL009** | Trạng thái chuyến phải được cập nhật theo trình tự nghiệp vụ phù hợp: đã nhận → tài xế đến → đã đón khách → đang di chuyển → hoàn thành. |
+| **BRL010** | Chỉ tài xế được phân công cho chuyến mới được phép cập nhật trạng thái của chuyến đó.                                                    |
+| **BRL011** | Thông tin vị trí của tài xế phải được ghi nhận để hỗ trợ tìm tài xế và dự kiến thời gian đến.                                            |
+| **BRL012** | Cước chuyến đi phải được xác định dựa trên loại dịch vụ và thông tin chuyến đi theo chính sách tính cước của doanh nghiệp.               |
+| **BRL013** | Khách hàng có thể thanh toán bằng tiền mặt hoặc phương thức thanh toán điện tử được hệ thống hỗ trợ.                                     |
+| **BRL014** | Thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán không được lưu trực tiếp trong hệ thống CAB.                                        |
+| **BRL015** | Chỉ giao dịch được nhà cung cấp thanh toán xác nhận thành công mới được ghi nhận là thanh toán điện tử thành công.                       |
+| **BRL016** | Khách hàng chỉ được đánh giá tài xế sau khi chuyến đi đã hoàn thành.                                                                     |
+| **BRL017** | Nhân viên vận hành chỉ được thực hiện các chức năng quản trị phù hợp với quyền được cấp.                                                 |
+| **BRL018** | Các thao tác quản trị quan trọng phải được lưu vết để phục vụ kiểm tra và xử lý sự cố.                                                   |
+| **BRL019** | Khách hàng phải được thông báo về các sự kiện quan trọng của chuyến đi và kết quả thanh toán.                                            |
+| **BRL020** | Khi một tài xế không nhận chuyến, hệ thống phải tiếp tục quá trình tìm kiếm cho đến khi tìm được tài xế hoặc không còn tài xế phù hợp.   |
+
+Các Exception:
+| **ID**    | **Exception**                                    | **Cách xử lý**                                                                                                                     |
+| --------- | ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **EX001** | **Tài xế không phản hồi**                        | Khi hết thời gian phản hồi quy định, hệ thống đánh dấu tài xế không nhận chuyến và tự động tìm tài xế phù hợp tiếp theo.           |
+| **EX002** | **Tài xế từ chối chuyến**                        | Hệ thống ghi nhận việc từ chối và tiếp tục tìm tài xế khác mà không yêu cầu khách hàng đặt lại.                                    |
+| **EX003** | **Không tìm được tài xế**                        | Hệ thống kết thúc quá trình tìm kiếm và thông báo rõ cho khách hàng rằng hiện không tìm được tài xế phù hợp.                       |
+| **EX004** | **Không có tài xế đang sẵn sàng**                | Hệ thống thông báo cho khách hàng và ghi nhận yêu cầu không thể phân công tài xế.                                                  |
+| **EX005** | **Thanh toán điện tử thất bại**                  | Hệ thống thông báo kết quả thất bại cho khách hàng và cho phép xử lý/thanh toán lại theo chính sách doanh nghiệp.                  |
+| **EX006** | **Nhà cung cấp thanh toán không phản hồi**       | Hệ thống không tự động xác nhận thành công; ghi nhận giao dịch ở trạng thái phù hợp và xử lý lại theo cơ chế của doanh nghiệp.     |
+| **EX007** | **Gửi thông báo thất bại**                       | Hệ thống ghi nhận lỗi và thực hiện cơ chế thử lại hoặc sử dụng kênh thông báo khác nếu được hỗ trợ.                                |
+| **EX008** | **Mất kết nối mạng của tài xế**                  | Hệ thống ghi nhận trạng thái kết nối không ổn định và xử lý cập nhật vị trí/trạng thái theo chính sách được doanh nghiệp xác định. |
+| **EX009** | **Mất kết nối của khách hàng**                   | Hệ thống vẫn duy trì trạng thái yêu cầu/chuyến trên phía server và đồng bộ lại thông tin khi khách hàng kết nối trở lại.           |
+| **EX010** | **Tài xế hủy chuyến sau khi đã nhận**            | Hệ thống ghi nhận việc hủy và thực hiện quy trình tìm tài xế thay thế hoặc xử lý theo chính sách hủy chuyến.                       |
+| **EX011** | **Khách hàng hủy chuyến**                        | Hệ thống kiểm tra trạng thái chuyến và áp dụng chính sách hủy chuyến tương ứng của doanh nghiệp.                                   |
+| **EX012** | **Thông tin đặt xe không hợp lệ**                | Hệ thống thông báo lỗi và yêu cầu khách hàng chỉnh sửa thông tin trước khi gửi yêu cầu.                                            |
+| **EX013** | **Tài xế không đáp ứng điều kiện nhận chuyến**   | Hệ thống loại tài xế khỏi danh sách phù hợp và tiếp tục tìm tài xế khác.                                                           |
+| **EX014** | **Lỗi hệ thống tại một thành phần**              | Thành phần bị lỗi được xử lý độc lập, hạn chế ảnh hưởng đến các chức năng khác như đặt xe, theo dõi chuyến hoặc quản lý vận hành.  |
+| **EX015** | **Người dùng không có quyền thực hiện thao tác** | Hệ thống từ chối thao tác và thông báo người dùng không có quyền truy cập chức năng đó.                                            |
 
