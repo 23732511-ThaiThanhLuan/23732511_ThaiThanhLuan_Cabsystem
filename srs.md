@@ -572,3 +572,31 @@ flowchart LR
     UC7 --- Payment
     UC8 --- Notification
 ```
+
+2. Use Case của Khách hàng
+```mermaid
+flowchart LR
+    Customer([Khách hàng])
+
+    UC1((Đăng ký tài khoản))
+    UC2((Đăng nhập))
+    UC3((Cập nhật thông tin cá nhân))
+    UC4((Đặt xe))
+    UC5((Theo dõi chuyến đi))
+    UC6((Xem lịch sử chuyến đi))
+    UC7((Xem cước chuyến đi))
+    UC8((Thanh toán))
+    UC9((Đánh giá tài xế))
+    UC10((Nhận thông báo))
+
+    Customer --- UC1
+    Customer --- UC2
+    Customer --- UC3
+    Customer --- UC4
+    Customer --- UC5
+    Customer --- UC6
+    Customer --- UC7
+    Customer --- UC8
+    Customer --- UC9
+    Customer --- UC10
+```
