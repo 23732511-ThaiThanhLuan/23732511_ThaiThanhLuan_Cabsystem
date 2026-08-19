@@ -184,3 +184,70 @@ flowchart TD
     U --> V([Chuyển sang thực hiện chuyến])
 ```
 
+Bước 7: 
+
+
+| **ID**    | **Functional Requirement**                                                                                                                                |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **FR001** | Hệ thống phải cho phép khách hàng đăng ký tài khoản bằng các thông tin được yêu cầu.                                                                      |
+| **FR002** | Hệ thống phải cho phép khách hàng đăng nhập và đăng xuất tài khoản.                                                                                       |
+| **FR003** | Hệ thống phải cho phép khách hàng cập nhật thông tin cá nhân.                                                                                             |
+| **FR004** | Hệ thống phải cho phép tài xế đăng ký tài khoản hoặc cho phép nhân viên vận hành tạo tài khoản tài xế.                                                    |
+| **FR005** | Hệ thống phải cho phép tài xế cập nhật thông tin cá nhân và thông tin phương tiện.                                                                        |
+| **FR006** | Hệ thống phải cho phép tài xế cập nhật trạng thái hoạt động, bao gồm sẵn sàng và không sẵn sàng nhận chuyến.                                              |
+| **FR007** | Hệ thống phải cho phép khách hàng nhập điểm đón và điểm đến khi đặt xe.                                                                                   |
+| **FR008** | Hệ thống phải cho phép khách hàng lựa chọn loại xe/dịch vụ trước khi gửi yêu cầu đặt xe.                                                                  |
+| **FR009** | Hệ thống phải cho phép khách hàng gửi yêu cầu đặt xe.                                                                                                     |
+| **FR010** | Hệ thống phải ghi nhận và quản lý trạng thái của yêu cầu đặt xe.                                                                                          |
+| **FR011** | Hệ thống phải xác định các tài xế phù hợp dựa trên vị trí, trạng thái sẵn sàng và các tiêu chí vận hành được cấu hình.                                    |
+| **FR012** | Hệ thống phải ưu tiên tài xế phù hợp và gần vị trí đón của khách hàng.                                                                                    |
+| **FR013** | Hệ thống phải gửi thông báo yêu cầu chuyến đến tài xế phù hợp.                                                                                            |
+| **FR014** | Hệ thống phải cho phép tài xế chấp nhận hoặc từ chối yêu cầu chuyến.                                                                                      |
+| **FR015** | Hệ thống phải ghi nhận thời điểm và kết quả phản hồi của tài xế.                                                                                          |
+| **FR016** | Hệ thống phải tự động tìm tài xế khác khi tài xế được đề xuất từ chối hoặc không phản hồi trong thời gian quy định.                                       |
+| **FR017** | Hệ thống phải thông báo cho khách hàng khi không tìm được tài xế phù hợp.                                                                                 |
+| **FR018** | Hệ thống phải xác nhận và cập nhật thông tin tài xế cho khách hàng sau khi tài xế nhận chuyến.                                                            |
+| **FR019** | Hệ thống phải cho phép tài xế cập nhật trạng thái đã đến điểm đón.                                                                                        |
+| **FR020** | Hệ thống phải cho phép tài xế cập nhật trạng thái đã đón khách.                                                                                           |
+| **FR021** | Hệ thống phải cho phép tài xế cập nhật trạng thái đang di chuyển.                                                                                         |
+| **FR022** | Hệ thống phải cho phép tài xế cập nhật trạng thái hoàn thành chuyến.                                                                                      |
+| **FR023** | Hệ thống phải ghi nhận và cập nhật vị trí của tài xế trong quá trình hoạt động.                                                                           |
+| **FR024** | Hệ thống phải cho phép khách hàng theo dõi trạng thái chuyến đi.                                                                                          |
+| **FR025** | Hệ thống phải hiển thị thông tin tài xế và thời gian dự kiến tài xế đến cho khách hàng.                                                                   |
+| **FR026** | Hệ thống phải lưu trữ lịch sử các chuyến đi của khách hàng.                                                                                               |
+| **FR027** | Hệ thống phải xác định số tiền khách hàng phải thanh toán dựa trên loại dịch vụ và thông tin chuyến đi.                                                   |
+| **FR028** | Hệ thống phải cho phép khách hàng lựa chọn phương thức thanh toán được hỗ trợ.                                                                            |
+| **FR029** | Hệ thống phải gửi yêu cầu thanh toán điện tử đến nhà cung cấp thanh toán bên ngoài.                                                                       |
+| **FR030** | Hệ thống phải tiếp nhận và lưu kết quả giao dịch thanh toán từ nhà cung cấp.                                                                              |
+| **FR031** | Hệ thống phải thông báo cho khách hàng khi thanh toán điện tử thành công hoặc thất bại.                                                                   |
+| **FR032** | Hệ thống phải cho phép xử lý lại giao dịch thanh toán thất bại theo chính sách của doanh nghiệp.                                                          |
+| **FR033** | Hệ thống không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.                                                                   |
+| **FR034** | Hệ thống phải gửi thông báo khi yêu cầu đặt xe được tiếp nhận.                                                                                            |
+| **FR035** | Hệ thống phải gửi thông báo khi tài xế nhận chuyến.                                                                                                       |
+| **FR036** | Hệ thống phải gửi thông báo khi tài xế đến điểm đón.                                                                                                      |
+| **FR037** | Hệ thống phải gửi thông báo khi chuyến đi hoàn thành.                                                                                                     |
+| **FR038** | Hệ thống phải gửi thông báo về kết quả thanh toán.                                                                                                        |
+| **FR039** | Hệ thống phải gửi thông báo cho tài xế về chuyến mới và các thay đổi liên quan đến chuyến đang thực hiện.                                                 |
+| **FR040** | Hệ thống phải cho phép mở rộng và tích hợp thêm các kênh thông báo mới.                                                                                   |
+| **FR041** | Hệ thống phải cho phép khách hàng đánh giá tài xế sau khi chuyến đi hoàn thành.                                                                           |
+| **FR042** | Hệ thống phải lưu trữ và quản lý kết quả đánh giá của khách hàng.                                                                                         |
+| **FR043** | Hệ thống phải cung cấp giao diện quản trị cho nhân viên vận hành.                                                                                         |
+| **FR044** | Hệ thống phải cho phép nhân viên vận hành tra cứu và quản lý thông tin khách hàng.                                                                        |
+| **FR045** | Hệ thống phải cho phép nhân viên vận hành tra cứu và quản lý thông tin tài xế.                                                                            |
+| **FR046** | Hệ thống phải cho phép nhân viên vận hành quản lý thông tin phương tiện.                                                                                  |
+| **FR047** | Hệ thống phải cho phép nhân viên vận hành theo dõi các chuyến đang diễn ra.                                                                               |
+| **FR048** | Hệ thống phải cho phép nhân viên vận hành kiểm tra trạng thái hoạt động của tài xế.                                                                       |
+| **FR049** | Hệ thống phải hỗ trợ nhân viên vận hành xử lý các trường hợp chuyến đi bị lỗi hoặc bất thường.                                                            |
+| **FR050** | Hệ thống phải cho phép nhân viên vận hành tra cứu lịch sử giao dịch.                                                                                      |
+| **FR051** | Hệ thống phải kiểm soát quyền truy cập của nhân viên đối với các chức năng quản trị.                                                                      |
+| **FR052** | Hệ thống phải ghi nhận nhật ký đối với các thao tác quản trị quan trọng.                                                                                  |
+| **FR053** | Hệ thống phải cung cấp báo cáo về số lượng chuyến đi.                                                                                                     |
+| **FR054** | Hệ thống phải cung cấp báo cáo về doanh thu.                                                                                                              |
+| **FR055** | Hệ thống phải cung cấp báo cáo về tỷ lệ chuyến hoàn thành và tỷ lệ hủy.                                                                                   |
+| **FR056** | Hệ thống phải cung cấp báo cáo về hiệu quả hoạt động của tài xế.                                                                                          |
+| **FR057** | Hệ thống phải cho phép thêm các loại dịch vụ mới mà không phải xây dựng lại toàn bộ hệ thống.                                                             |
+| **FR058** | Hệ thống phải cho phép tích hợp thêm phương thức thanh toán hoặc nhà cung cấp thanh toán mới.                                                             |
+| **FR059** | Hệ thống phải cho phép các thành phần xử lý thanh toán, thông báo và đặt xe hoạt động độc lập để hạn chế ảnh hưởng dây chuyền khi một thành phần gặp lỗi. |
+| **FR060** | Hệ thống phải hỗ trợ triển khai chức năng mới từng phần mà hạn chế ảnh hưởng đến các chức năng đang hoạt động.                                            |
+
+
