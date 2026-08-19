@@ -86,6 +86,7 @@ Bước 4:
 Xác định phạm vi
 
 1. In Scope – Trong phạm vi
+
 | **Nhóm**                | **Phạm vi hệ thống CAB**                                                                                                                      |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Quản lý tài khoản**   | Đăng ký, đăng nhập, cập nhật thông tin khách hàng và tài xế; xác thực người dùng.                                                             |
@@ -107,6 +108,8 @@ Xác định phạm vi
 | **Khả năng mở rộng**    | Thiết kế nền tảng cho phép mở rộng số lượng người dùng và bổ sung dịch vụ, phương thức thanh toán, kênh thông báo mới.                        |
 
 2. Out of Scope / Chưa xác định – Ngoài hoặc chưa thuộc phạm vi hiện tại
+
+   
 | **Nội dung**                                        | **Trạng thái**                                                                            |
 | --------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 | **Chi tiết công thức tính cước**                    | Chưa xác định, cần BA làm rõ với khách hàng.                                              |
