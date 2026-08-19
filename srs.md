@@ -130,18 +130,30 @@ Bước 6: Xác định Bussiness Process
 
 BP01 – Đăng ký và quản lý tài khoản
 
+```mermaid
 flowchart TD
-    A([Bắt đầu]) --> B{Người dùng là ai?}
-    B -->|Khách hàng| C[Khách hàng đăng ký tài khoản]
-    B -->|Tài xế| D[Tài xế đăng ký tài khoản]
-    C --> E[Nhập thông tin cá nhân]
-    D --> F[Nhập thông tin cá nhân và phương tiện]
-    E --> G[Hệ thống kiểm tra thông tin]
-    F --> G
-    G --> H{Thông tin hợp lệ?}
-    H -->|Không| I[Thông báo lỗi]
-    I --> E
-    H -->|Có| J[Tạo tài khoản]
-    J --> K[Đăng nhập]
-    K --> L[Cập nhật hồ sơ khi cần]
-    L --> M([Kết thúc])
+    A([Khách hàng bắt đầu]) --> B[Đăng nhập]
+    B --> C[Nhập điểm đón]
+    C --> D[Nhập điểm đến]
+    D --> E[Chọn loại xe]
+    E --> F[Gửi yêu cầu đặt xe]
+    F --> G[Hệ thống tiếp nhận yêu cầu]
+    G --> H[Thông báo yêu cầu đã được tiếp nhận]
+    H --> I[Xác định tài xế phù hợp]
+
+    I --> J{Có tài xế phù hợp?}
+
+    J -->|Không| K[Thông báo không tìm được tài xế]
+    K --> Z([Kết thúc])
+
+    J -->|Có| L[Gửi yêu cầu cho tài xế]
+    L --> M{Tài xế nhận chuyến?}
+
+    M -->|Không| N[Tài xế từ chối hoặc không phản hồi]
+    N --> O[Tìm tài xế khác]
+    O --> I
+
+    M -->|Có| P[Xác nhận tài xế nhận chuyến]
+    P --> Q[Thông báo cho khách hàng]
+    Q --> R([Chuyển sang thực hiện chuyến])
+```
