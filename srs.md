@@ -487,4 +487,28 @@ Bước 9:
 | **Employee (Nhân viên vận hành)**                 | **EmployeeID** (PK), FullName, Email, Password, RoleID (FK), EmployeeStatus, CreatedAt                                                                                                               |
 | **Role (Vai trò)**                                | **RoleID** (PK), RoleName, Description                                                                                                                                                               |
 | **AuditLog (Nhật ký hệ thống)**                   | **LogID** (PK), EmployeeID (FK), Action, EntityType, EntityID, Timestamp, Description                                                                                                                |
+Bước 10: Xác định Non-Bussiness Requirement
+
+| **ID**     | **Non-Business Requirement**     | **Diễn giải**                                                                                                                                   |
+| ---------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NBR001** | **Hiệu năng**                    | Hệ thống phải có khả năng xử lý số lượng lớn yêu cầu đặt xe đồng thời mà không làm giảm đáng kể hiệu năng.                                      |
+| **NBR002** | **Khả năng mở rộng**             | Hệ thống phải có khả năng mở rộng khi số lượng khách hàng, tài xế và chuyến đi tăng lên.                                                        |
+| **NBR003** | **Khả năng mở rộng độc lập**     | Các thành phần như đặt xe, thanh toán và thông báo phải có khả năng mở rộng độc lập theo nhu cầu tải.                                           |
+| **NBR004** | **Tính sẵn sàng**                | Hệ thống phải hoạt động ổn định, đặc biệt trong các thời điểm nhu cầu đặt xe tăng cao.                                                          |
+| **NBR005** | **Khả năng chịu lỗi**            | Lỗi tại một thành phần như thanh toán hoặc thông báo không được làm toàn bộ hệ thống đặt xe ngừng hoạt động.                                    |
+| **NBR006** | **Khả năng phục hồi**            | Hệ thống phải có khả năng phục hồi và tiếp tục hoạt động sau khi một thành phần hoặc dịch vụ gặp sự cố.                                         |
+| **NBR007** | **Bảo mật**                      | Hệ thống phải bảo vệ thông tin cá nhân, thông tin phương tiện, dữ liệu vị trí và dữ liệu giao dịch khỏi truy cập trái phép.                     |
+| **NBR008** | **Xác thực**                     | Người dùng phải được xác thực trước khi truy cập các chức năng yêu cầu tài khoản.                                                               |
+| **NBR009** | **Phân quyền**                   | Hệ thống phải kiểm soát quyền truy cập dựa trên vai trò, đặc biệt đối với các chức năng quản trị và thao tác nhạy cảm.                          |
+| **NBR010** | **Bảo vệ dữ liệu thanh toán**    | Hệ thống không được lưu trực tiếp thông tin nhạy cảm của thẻ hoặc tài khoản thanh toán.                                                         |
+| **NBR011** | **Audit / Logging**              | Hệ thống phải lưu vết các thao tác quan trọng để phục vụ kiểm tra, điều tra sự cố và truy vết hoạt động.                                        |
+| **NBR012** | **Toàn vẹn dữ liệu**             | Hệ thống phải đảm bảo dữ liệu chuyến đi, thanh toán, tài xế và khách hàng được lưu trữ chính xác và nhất quán.                                  |
+| **NBR013** | **Khả năng tích hợp**            | Hệ thống phải có khả năng tích hợp với các nhà cung cấp thanh toán và dịch vụ thông báo bên ngoài.                                              |
+| **NBR014** | **Khả năng thay thế thành phần** | Hệ thống phải cho phép thay đổi nhà cung cấp thanh toán, thông báo hoặc một số thành phần kỹ thuật mà không phải xây dựng lại toàn bộ hệ thống. |
+| **NBR015** | **Khả năng mở rộng chức năng**   | Kiến trúc hệ thống phải hỗ trợ bổ sung loại dịch vụ, phương thức thanh toán và kênh thông báo mới trong tương lai.                              |
+| **NBR016** | **Khả năng bảo trì**             | Hệ thống phải được thiết kế để các chức năng có thể được bảo trì hoặc cập nhật mà hạn chế ảnh hưởng đến các chức năng khác.                     |
+| **NBR017** | **Triển khai từng phần**         | Các chức năng mới phải có khả năng được triển khai từng phần mà hạn chế ảnh hưởng đến hệ thống đang hoạt động.                                  |
+| **NBR018** | **Khả năng giám sát**            | Hệ thống cần hỗ trợ theo dõi trạng thái hoạt động và phát hiện lỗi của các thành phần quan trọng.                                               |
+| **NBR019** | **Khả năng tương thích**         | Hệ thống phải hỗ trợ các môi trường và thiết bị cần thiết để khách hàng, tài xế và nhân viên vận hành sử dụng các chức năng được cung cấp.      |
+| **NBR020** | **Khả năng phục vụ tải cao**     | Hệ thống phải duy trì hoạt động khi nhu cầu đặt xe tăng đột biến, đặc biệt trong các thời điểm cao điểm.                                        |
 
