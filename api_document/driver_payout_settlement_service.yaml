@@ -1,1 +1,115 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - Driver Payout & Settlement Service API
+  description: API quản lý bảng kê thu nhập tài xế, quyết toán hoa hồng, thưởng chạy chuyến theo tuần/tháng và thực hiện rút tiền về tài khoản ngân hàng.
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/payouts
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ Đối soát & Quyết toán Thu nhập Tài xế.
 
+paths:
+  /summary:
+    get:
+      summary: Lấy tổng quan thu nhập tài xế theo chu kỳ
+      description: Bảng tổng hợp tổng cước phí nhận được, hoa hồng đã trừ, tiền thưởng đạt mốc và số tiền thực nhận.
+      operationId: getDriverEarningsSummary
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: period
+          in: query
+          description: Chu kỳ tổng hợp dữ liệu thu nhập.
+          required: false
+          schema:
+            type: string
+            enum: [TODAY, THIS_WEEK, THIS_MONTH]
+            default: THIS_WEEK
+            example: "THIS_WEEK"
+      responses:
+        '200':
+          description: Trả về bảng tổng hợp thu nhập thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EarningsSummaryResponse'
+
+  /withdraw:
+    post:
+      summary: Yêu cầu rút tiền thu nhập về tài khoản ngân hàng
+      description: Rút số tiền thu nhập khả dụng trong ví tài xế về ngân hàng đã liên kết.
+      operationId: withdrawEarnings
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Yêu cầu rút tiền về ngân hàng.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Cấu trúc yêu cầu rút tiền.
+              required:
+                - amount
+                - bankAccountId
+              properties:
+                amount:
+                  type: number
+                  description: Số tiền tài xế muốn rút (VNĐ).
+                  example: 1500000
+                bankAccountId:
+                  type: string
+                  format: uuid
+                  description: Mã tài khoản ngân hàng đã đăng ký liên kết.
+                  example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Khởi tạo lệnh rút tiền thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Kết quả xử lý giao dịch rút tiền.
+                properties:
+                  payoutTransactionId:
+                    type: string
+                    format: uuid
+                    description: Mã giao dịch rút tiền.
+                    example: "770e8400-e29b-41d4-a716-446655447777"
+                  status:
+                    type: string
+                    description: Trạng thái lệnh rút tiền.
+                    example: "PROCESSING"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
+
+  schemas:
+    EarningsSummaryResponse:
+      type: object
+      description: Chi tiết bảng kê thu nhập của tài xế.
+      properties:
+        grossFare:
+          type: number
+          description: Tổng cước phí các chuyến đi đã hoàn thành (VNĐ).
+          example: 4500000
+        platformCommission:
+          type: number
+          description: Tiền chiết khấu hoa hồng nền tảng thu (VNĐ).
+          example: 900000
+        bonusAmount:
+          type: number
+          description: Tiền thưởng đạt mốc chuyến đi trong chu kỳ (VNĐ).
+          example: 300000
+        netEarnings:
+          type: number
+          description: Thu nhập thực nhận cuối cùng của tài xế (VNĐ).
+          example: 3900000
+        withdrawableAmount:
+          type: number
+          description: Số tiền hiện tại có thể thực hiện rút ngay.
+          example: 3900000
