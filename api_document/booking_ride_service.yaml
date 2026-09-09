@@ -1,1 +1,365 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - Ride Booking & Dispatching Service API
+  description: API quản lý quy trình ước tính giá, tạo yêu cầu đặt xe, điều phối tài xế và hủy chuyến (FR007 - FR022).
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/rides
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ Đặt xe và Điều phối.
 
+paths:
+  /estimate:
+    post:
+      summary: Ước tính khoảng cách, thời gian và cước phí (FR007, FR027)
+      description: Nhận điểm đón và điểm đến để tính toán cước phí ước tính cho các loại hình xe khác nhau.
+      operationId: estimateRide
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin điểm đón, điểm đến và mã khuyến mãi nếu có.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideEstimateRequest'
+      responses:
+        '200':
+          description: Tính toán thành công. Trả về thông tin quãng đường, thời gian dự kiến và bảng giá theo từng hạng xe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideEstimateResponse'
+        '400':
+          description: Điểm đón hoặc điểm đến không hợp lệ hoặc nằm ngoài vùng phục vụ.
+
+  /book:
+    post:
+      summary: Tạo yêu cầu đặt xe mới (FR008, FR009, FR010)
+      description: Khách hàng xác nhận thông tin đặt xe, hệ thống chuyển sang trạng thái tìm kiếm tài xế.
+      operationId: createRideBooking
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin chi tiết để tạo chuyến đi mới.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRideBookingRequest'
+      responses:
+        '201':
+          description: Yêu cầu đặt xe tạo thành công. Trả về thông tin chuyến đi đang tìm tài xế.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideBookingDetail'
+        '400':
+          description: Thông tin yêu cầu không hợp lệ.
+        '409':
+          description: Khách hàng đang có chuyến đi khác chưa hoàn thành.
+
+  /{rideId}:
+    get:
+      summary: Xem thông tin chi tiết chuyến đi (FR015, FR017)
+      description: Lấy thông tin trạng thái chuyến đi, chi tiết điểm đón/đến, thông tin tài xế và xe được phân công.
+      operationId: getRideDetails
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: rideId
+          in: path
+          description: Mã định danh duy nhất của chuyến đi (UUID).
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      responses:
+        '200':
+          description: Trả về thông tin chi tiết chuyến đi thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideBookingDetail'
+        '404':
+          description: Không tìm thấy thông tin chuyến đi tương ứng.
+
+  /{rideId}/cancel:
+    post:
+      summary: Hủy chuyến đi (FR021, FR022)
+      description: Cho phép Khách hàng hoặc Tài xế/Hệ thống hủy chuyến đi kèm theo lý do hủy.
+      operationId: cancelRide
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: rideId
+          in: path
+          description: Mã định danh duy nhất của chuyến đi cần hủy.
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      requestBody:
+        description: Lý do hủy chuyến đi và đối tượng thực hiện hủy.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelRideRequest'
+      responses:
+        '200':
+          description: Hủy chuyến đi thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelRideResponse'
+        '400':
+          description: Chuyến đi đã ở trạng thái không thể hủy (ví dụ đã hoàn thành).
+
+  /dispatch/find-driver:
+    post:
+      summary: Kích hoạt thuật toán tự động tìm và gán tài xế (FR011, FR012, FR016)
+      description: API nội bộ gọi để quét và phát tín hiệu chuyến đi tới tài xế thích hợp nhất gần điểm đón.
+      operationId: dispatchFindDriver
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin chuyến đi và bán kính quét tài xế xung quanh.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Cấu trúc dữ liệu yêu cầu quét tài xế.
+              required:
+                - rideId
+              properties:
+                rideId:
+                  type: string
+                  format: uuid
+                  description: Mã định danh chuyến đi cần tìm tài xế.
+                  example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+                radiusKm:
+                  type: number
+                  description: Bán kính quét tìm tài xế tính theo kilômét.
+                  default: 3.0
+                  example: 3.0
+      responses:
+        '200':
+          description: Đã gửi thông báo phát chuyến đến danh sách tài xế phù hợp.
+        '404':
+          description: Không tìm thấy tài xế khả dụng quanh khu vực điểm đón.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
+
+  schemas:
+    GeoPoint:
+      type: object
+      description: Tọa độ địa lý GPS và địa chỉ tương ứng.
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: double
+          description: Vĩ độ địa lý.
+          example: 10.776889
+        longitude:
+          type: number
+          format: double
+          description: Kinh độ địa lý.
+          example: 106.700806
+        address:
+          type: string
+          description: Địa chỉ hiển thị mô tả vị trí.
+          example: "220 Điện Biên Phủ, Phường Võ Thị Sáu, Quận 3, TP.HCM"
+
+    RideEstimateRequest:
+      type: object
+      description: Cấu trúc yêu cầu tính cước phí ước tính chuyến đi.
+      required:
+        - pickupLocation
+        - destinationLocation
+      properties:
+        pickupLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        destinationLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        promoCode:
+          type: string
+          description: Mã giảm giá/khuyến mãi áp dụng.
+          example: "CABXIN2026"
+
+    RideEstimateOption:
+      type: object
+      description: Chi tiết bảng giá ước tính cho từng loại dịch vụ xe.
+      properties:
+        serviceType:
+          type: string
+          description: Loại dịch vụ xe.
+          enum: [CAB_BIKE, CAB_4_SEATS, CAB_7_SEATS, CAB_PREMIUM]
+          example: "CAB_4_SEATS"
+        serviceName:
+          type: string
+          description: Tên hiển thị của dịch vụ xe.
+          example: "Cab Xe 4 Chỗ"
+        baseFare:
+          type: number
+          description: Giá cước mở cửa ban đầu.
+          example: 25000
+        estimatedFare:
+          type: number
+          description: Tổng cước phí ước tính trước khi giảm giá.
+          example: 85000
+        discountAmount:
+          type: number
+          description: Số tiền được giảm giá theo khuyến mãi.
+          example: 10000
+        finalFare:
+          type: number
+          description: Cước phí thực tế khách hàng phải trả.
+          example: 75000
+
+    RideEstimateResponse:
+      type: object
+      description: Kết quả phản hồi tính cước phí ước tính cho các loại xe.
+      properties:
+        distanceKm:
+          type: number
+          format: float
+          description: Tổng quãng đường dự kiến (km).
+          example: 5.4
+        durationMinutes:
+          type: integer
+          description: Thời gian di chuyển dự kiến (phút).
+          example: 18
+        estimates:
+          type: array
+          description: Danh sách ước tính cước phí cho từng loại hình dịch vụ xe.
+          items:
+            $ref: '#/components/schemas/RideEstimateOption'
+
+    CreateRideBookingRequest:
+      type: object
+      description: Yêu cầu đặt chuyến đi mới từ phía khách hàng.
+      required:
+        - pickupLocation
+        - destinationLocation
+        - serviceType
+        - paymentMethod
+      properties:
+        pickupLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        destinationLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        serviceType:
+          type: string
+          description: Loại xe khách hàng chọn đặt.
+          example: "CAB_4_SEATS"
+        paymentMethod:
+          type: string
+          description: Phương thức thanh toán được chọn.
+          enum: [CASH, WALLET, CREDIT_CARD]
+          example: "WALLET"
+        promoCode:
+          type: string
+          description: Mã khuyến mãi áp dụng.
+          example: "CABXIN2026"
+        noteToDriver:
+          type: string
+          description: Ghi chú của khách hàng dành cho tài xế.
+          example: "Đón tôi trước cổng trường đại học"
+
+    RideBookingDetail:
+      type: object
+      description: Thông tin chi tiết toàn bộ về một chuyến đi.
+      properties:
+        rideId:
+          type: string
+          format: uuid
+          description: Định danh duy nhất của chuyến đi.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        customerId:
+          type: string
+          format: uuid
+          description: Định danh khách hàng đặt chuyến.
+          example: "c4a89a06-4447-4950-9366-2679dc6e86ef"
+        driverId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Định danh tài xế nhận chuyến (null nếu chưa tìm thấy).
+          example: "e28d54a2-15f2-4c28-98f9-4d833bc71d43"
+        serviceType:
+          type: string
+          description: Loại dịch vụ xe.
+          example: "CAB_4_SEATS"
+        status:
+          type: string
+          description: Trạng thái hiện tại của chuyến đi.
+          enum: [SEARCHING, DRIVER_ACCEPTED, DRIVER_ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED]
+          example: "SEARCHING"
+        pickupLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        destinationLocation:
+          $ref: '#/components/schemas/GeoPoint'
+        estimatedFare:
+          type: number
+          description: Cước phí dự kiến của chuyến đi.
+          example: 75000
+        paymentMethod:
+          type: string
+          description: Phương thức thanh toán.
+          example: "WALLET"
+        createdAt:
+          type: string
+          format: date-time
+          description: Thời gian khởi tạo chuyến đi.
+          example: "2026-09-09T18:50:00Z"
+
+    CancelRideRequest:
+      type: object
+      description: Yêu cầu hủy chuyến đi.
+      required:
+        - cancelReason
+      properties:
+        cancelReason:
+          type: string
+          description: Lý do chi tiết cho việc hủy chuyến.
+          example: "Chờ tài xế quá lâu"
+        cancelledBy:
+          type: string
+          description: Đối tượng yêu cầu hủy chuyến.
+          enum: [CUSTOMER, DRIVER, SYSTEM]
+          example: "CUSTOMER"
+
+    CancelRideResponse:
+      type: object
+      description: Phản hồi kết quả sau khi hủy chuyến thành công.
+      properties:
+        rideId:
+          type: string
+          format: uuid
+          description: Mã định danh chuyến đi đã hủy.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        status:
+          type: string
+          description: Trạng thái chuyến đi sau khi xử lý.
+          example: "CANCELLED"
+        cancellationFee:
+          type: number
+          description: Phí phạt hủy chuyến (nếu có).
+          example: 0
+        cancelledAt:
+          type: string
+          format: date-time
+          description: Thời điểm chuyến đi bị hủy.
+          example: "2026-09-09T18:55:00Z"
