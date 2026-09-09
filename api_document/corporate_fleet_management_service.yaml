@@ -1,1 +1,108 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - Corporate & Fleet Management Service API
+  description: API quản lý tài khoản khách hàng doanh nghiệp, đặt xe cho nhân viên, thiết lập hạn mức chi tiêu và quản lý đội xe hợp tác.
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/corporate
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ Doanh nghiệp & Đội xe.
 
+paths:
+  /employees:
+    post:
+      summary: Thêm nhân viên vào tài khoản doanh nghiệp
+      description: Cho phép quản trị viên công ty thêm email nhân viên được phép sử dụng hạn mức đặt xe công ty.
+      operationId: addCorporateEmployee
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin nhân viên và hạn mức chi tiêu hàng tháng.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Yêu cầu thêm nhân viên công ty.
+              required:
+                - email
+                - fullName
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email công vụ của nhân viên.
+                  example: "nhanvien@company.com"
+                fullName:
+                  type: string
+                  description: Họ và tên nhân viên.
+                  example: "Lê Văn C"
+                monthlyLimitVnd:
+                  type: number
+                  description: Hạn mức cước phí đặt xe tối đa trong tháng (VNĐ).
+                  example: 2000000
+      responses:
+        '201':
+          description: Đã thêm nhân viên vào danh sách tài khoản doanh nghiệp.
+
+  /rides/book:
+    post:
+      summary: Đặt xe dưới hình thức thanh toán Doanh nghiệp (Corporate Ride)
+      description: Nhân viên đặt xe và ghi nợ cước phí trực tiếp vào hạn mức thanh toán trả sau của công ty.
+      operationId: bookCorporateRide
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin chuyến đi kèm mã chi phí/lý do di chuyển công tác.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Yêu cầu đặt xe doanh nghiệp.
+              required:
+                - pickupAddress
+                - destinationAddress
+                - businessReason
+              properties:
+                pickupAddress:
+                  type: string
+                  description: Địa chỉ điểm đón.
+                  example: "Tòa nhà Bitexco, Q1, TP.HCM"
+                destinationAddress:
+                  type: string
+                  description: Địa chỉ điểm đến.
+                  example: "Khu công nghệ cao, Q9, TP.HCM"
+                businessReason:
+                  type: string
+                  description: Lý do di chuyển công tác.
+                  example: "Gặp gỡ khách hàng ký hợp đồng"
+                costCenterCode:
+                  type: string
+                  description: Mã trung tâm chi phí / Phòng ban.
+                  example: "SALES_DEPT_01"
+      responses:
+        '200':
+          description: Tạo chuyến đi doanh nghiệp thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Kết quả xác nhận đặt xe.
+                properties:
+                  rideId:
+                    type: string
+                    format: uuid
+                    description: Mã chuyến đi doanh nghiệp.
+                    example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+                  status:
+                    type: string
+                    description: Trạng thái chuyến đi.
+                    example: "SEARCHING_DRIVER"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
