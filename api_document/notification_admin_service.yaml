@@ -1,1 +1,349 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - Notification, Feedback & Admin Management Service API
+  description: API quản lý thông báo push/SMS, hệ thống đánh giá & phản hồi chuyến đi, cùng các chức năng quản trị hệ thống cho Admin (FR033 - FR040).
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/admin
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ Thông báo, Đánh giá và Quản trị.
 
+paths:
+  /notifications/push:
+    post:
+      summary: Gửi thông báo đẩy đến người dùng (FR033)
+      description: API nội bộ gửi thông báo đẩy (Push Notification) hoặc SMS tới thiết bị Khách hàng hoặc Tài xế khi có cập nhật chuyến đi.
+      operationId: sendPushNotification
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin chi tiết nội dung thông báo và danh sách thiết bị nhận.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushNotificationRequest'
+      responses:
+        '200':
+          description: Đã gửi yêu cầu thông báo đến dịch vụ FCM/APNS thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+        '400':
+          description: Dữ liệu thông báo không chính xác.
+
+  /reviews:
+    post:
+      summary: Gửi đánh giá và phản hồi về chuyến đi (FR034, FR035)
+      description: Cho phép Khách hàng đánh giá số sao (1-5 sao) và để lại nhận xét cho Tài xế sau khi hoàn thành chuyến đi.
+      operationId: submitRideReview
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin số sao đánh giá, tiêu chí chọn sẵn và nhận xét chi tiết.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewSubmissionRequest'
+      responses:
+        '201':
+          description: Đánh giá chuyến đi đã được lưu thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewDetail'
+        '400':
+          description: Yêu cầu đánh giá không hợp lệ hoặc chuyến đi chưa hoàn thành.
+        '409':
+          description: Chuyến đi này đã được đánh giá trước đó.
+
+  /admin/drivers/approval:
+    get:
+      summary: Lấy danh sách hồ sơ tài xế chờ duyệt (FR036)
+      description: Dành cho Admin lấy danh sách các tài xế mới đăng ký đang chờ xác minh giấy tờ và phê duyệt tài khoản.
+      operationId: getPendingDrivers
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          description: Số trang cần lấy dữ liệu phân trang.
+          required: false
+          schema:
+            type: integer
+            default: 1
+            example: 1
+        - name: limit
+          in: query
+          description: Số lượng bản ghi trên một trang.
+          required: false
+          schema:
+            type: integer
+            default: 20
+            example: 20
+      responses:
+        '200':
+          description: Trả về danh sách tài xế chờ duyệt thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Danh sách phân trang hồ sơ tài xế.
+                properties:
+                  total:
+                    type: integer
+                    description: Tổng số hồ sơ chờ duyệt.
+                    example: 12
+                  drivers:
+                    type: array
+                    description: Danh sách thông tin hồ sơ tài xế.
+                    items:
+                      $ref: '#/components/schemas/PendingDriverProfile'
+
+  /admin/drivers/{driverId}/approve:
+    put:
+      summary: Phê duyệt hoặc từ chối tài khoản tài xế (FR036, FR037)
+      description: Dành cho Admin chấp thuận hoặc từ chối cấp phép hoạt động cho tài xế kèm lý do.
+      operationId: approveDriver
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: driverId
+          in: path
+          description: Mã định danh duy nhất của tài xế (UUID).
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "e28d54a2-15f2-4c28-98f9-4d833bc71d43"
+      requestBody:
+        description: Trạng thái phê duyệt và lý do nếu từ chối.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Yêu cầu phê duyệt hồ sơ tài xế.
+              required:
+                - approved
+              properties:
+                approved:
+                  type: boolean
+                  description: Kết quả xét duyệt (true = Duyệt, false = Từ chối).
+                  example: true
+                rejectionReason:
+                  type: string
+                  description: Lý do từ chối nếu không thông qua xét duyệt.
+                  example: "Bằng lái xe đã hết hạn sử dụng"
+      responses:
+        '200':
+          description: Xử lý phê duyệt thành công.
+        '404':
+          description: Không tìm thấy tài khoản tài xế tương ứng.
+
+  /admin/dashboard/stats:
+    get:
+      summary: Lấy dữ liệu báo cáo thống kê tổng quan (FR038, FR039, FR040)
+      description: Lấy báo cáo doanh thu, số lượng chuyến đi, tỷ lệ hủy chuyến và số lượng người dùng cho Quản trị viên.
+      operationId: getDashboardStats
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          description: Ngày bắt đầu lọc báo cáo (Định dạng YYYY-MM-DD).
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-09-01"
+        - name: endDate
+          in: query
+          description: Ngày kết thúc lọc báo cáo (Định dạng YYYY-MM-DD).
+          required: true
+          schema:
+            type: string
+            format: date
+            example: "2026-09-09"
+      responses:
+        '200':
+          description: Trả về dữ liệu báo cáo thống kê thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStatsResponse'
+        '400':
+          description: Định dạng ngày tháng không hợp lệ.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
+
+  schemas:
+    PushNotificationRequest:
+      type: object
+      description: Cấu trúc yêu cầu gửi thông báo đẩy.
+      required:
+        - recipientUserId
+        - title
+        - body
+      properties:
+        recipientUserId:
+          type: string
+          format: uuid
+          description: Mã định danh người nhận thông báo.
+          example: "c4a89a06-4447-4950-9366-2679dc6e86ef"
+        title:
+          type: string
+          description: Tiêu đề hiển thị trên thông báo push.
+          example: "Tài xế đã đến điểm đón!"
+        body:
+          type: string
+          description: Nội dung chi tiết của thông báo.
+          example: "Tài xế Nguyễn Văn A với biển số 51H-123.45 đã đến điểm đón bạn."
+        dataPayload:
+          type: object
+          description: Dữ liệu kèm theo thông báo dạng JSON key-value.
+          example:
+            rideId: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+            type: "DRIVER_ARRIVED"
+
+    NotificationResponse:
+      type: object
+      description: Phản hồi kết quả gửi thông báo.
+      properties:
+        messageId:
+          type: string
+          description: Mã định danh tin nhắn từ hệ thống đẩy thông báo.
+          example: "msg_9988776655"
+        status:
+          type: string
+          description: Trạng thái gửi thông báo.
+          example: "SENT"
+        sentAt:
+          type: string
+          format: date-time
+          description: Thời điểm gửi thông báo thành công.
+          example: "2026-09-09T18:52:00Z"
+
+    ReviewSubmissionRequest:
+      type: object
+      description: Yêu cầu gửi đánh giá chuyến đi từ khách hàng.
+      required:
+        - rideId
+        - rating
+      properties:
+        rideId:
+          type: string
+          format: uuid
+          description: Mã chuyến đi cần gửi đánh giá.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        rating:
+          type: integer
+          description: Số sao đánh giá (từ 1 đến 5).
+          minimum: 1
+          maximum: 5
+          example: 5
+        comment:
+          type: string
+          description: Lời nhận xét hoặc góp ý chi tiết.
+          example: "Tài xế lái xe an toàn, lịch sự và xe rất sạch sẽ."
+        tags:
+          type: array
+          description: Danh sách các nhãn khen ngợi/góp ý nhanh.
+          items:
+            type: string
+          example: ["Lái xe an toàn", "Xe sạch sẻ", "Thân thiện"]
+
+    ReviewDetail:
+      type: object
+      description: Thông tin chi tiết một bản ghi đánh giá chuyến đi.
+      properties:
+        reviewId:
+          type: string
+          format: uuid
+          description: Mã định danh duy nhất của đánh giá.
+          example: "110e8400-e29b-41d4-a716-446655440000"
+        rideId:
+          type: string
+          format: uuid
+          description: Mã chuyến đi được đánh giá.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        rating:
+          type: integer
+          description: Số sao đánh giá đã lưu.
+          example: 5
+        comment:
+          type: string
+          description: Nội dung nhận xét.
+          example: "Tài xế lái xe an toàn, lịch sự."
+        createdAt:
+          type: string
+          format: date-time
+          description: Thời điểm gửi đánh giá.
+          example: "2026-09-09T19:05:00Z"
+
+    PendingDriverProfile:
+      type: object
+      description: Hồ sơ chi tiết của tài xế đang chờ cấp phép hoạt động.
+      properties:
+        driverId:
+          type: string
+          format: uuid
+          description: Mã định danh duy nhất của tài xế.
+          example: "e28d54a2-15f2-4c28-98f9-4d833bc71d43"
+        fullName:
+          type: string
+          description: Họ và tên tài xế.
+          example: "Trần Văn B"
+        phoneNumber:
+          type: string
+          description: Số điện thoại liên hệ.
+          example: "+84912345678"
+        licenseNumber:
+          type: string
+          description: Số giấy phép lái xe (GPLX).
+          example: "790123456789"
+        vehiclePlate:
+          type: string
+          description: Biển số xe đăng ký.
+          example: "51H-123.45"
+        submittedAt:
+          type: string
+          format: date-time
+          description: Thời gian nộp hồ sơ đăng ký.
+          example: "2026-09-08T10:00:00Z"
+
+    DashboardStatsResponse:
+      type: object
+      description: Phản hồi báo cáo thống kê dành cho Admin.
+      properties:
+        totalRides:
+          type: integer
+          description: Tổng số chuyến đi trong khoảng thời gian tra cứu.
+          example: 12500
+        completedRides:
+          type: integer
+          description: Số chuyến đi hoàn thành thành công.
+          example: 11200
+        cancelledRides:
+          type: integer
+          description: Số chuyến đi bị hủy.
+          example: 1300
+        totalRevenue:
+          type: number
+          description: Tổng doanh thu cước phí ghi nhận (VNĐ).
+          example: 980000000
+        platformCommission:
+          type: number
+          description: Tổng tiền chiết khấu hoa hồng của nền tảng (VNĐ).
+          example: 196000000
+        activeDriversCount:
+          type: integer
+          description: Số lượng tài xế đang hoạt động trong hệ thống.
+          example: 450
