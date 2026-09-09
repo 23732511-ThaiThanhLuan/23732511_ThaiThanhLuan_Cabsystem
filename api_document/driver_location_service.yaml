@@ -1,1 +1,282 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - Driver Operations & GPS Real-Time Service API
+  description: API hỗ trợ các ứng dụng dành cho Tài xế, bao gồm quản lý trạng thái online/offline, cập nhật vị trí GPS thời gian thực, tiếp nhận chuyến và cập nhật tiến trình hành trình chuyến đi (FR011 - FR025).
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/driver
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ Tài xế và Vị trí thời gian thực.
 
+paths:
+  /status:
+    put:
+      summary: Bật/tắt trạng thái sẵn sàng nhận chuyến (FR011)
+      description: Cho phép Tài xế thay đổi trạng thái hoạt động (Trực tuyến/Ngoại tuyến) để nhận yêu cầu đặt xe từ hệ thống.
+      operationId: updateDriverStatus
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin trạng thái online/offline và xe đang vận hành của tài xế.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Yêu cầu cập nhật trạng thái hoạt động của tài xế.
+              required:
+                - isOnline
+              properties:
+                isOnline:
+                  type: boolean
+                  description: Trạng thái sẵn sàng nhận chuyến (true = Online, false = Offline).
+                  example: true
+                currentVehicleId:
+                  type: string
+                  format: uuid
+                  description: Mã định danh duy nhất của phương tiện tài xế đang điều khiển.
+                  example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Cập nhật trạng thái thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverStatusResponse'
+        '400':
+          description: Yêu cầu không hợp lệ hoặc tài xế đang bị khóa tài khoản.
+
+  /location:
+    post:
+      summary: Cập nhật vị trí GPS của tài xế theo thời gian thực (FR023, FR024)
+      description: Lớp ứng dụng tài xế gửi tọa độ GPS định kỳ (ví dụ mỗi 3-5 giây) về hệ thống để xử lý điều chuyến và hiển thị trên bản đồ Khách hàng.
+      operationId: updateDriverLocation
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin tọa độ GPS thời gian thực và thời điểm ghi nhận.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverLocationPayload'
+      responses:
+        '200':
+          description: Vị trí được ghi nhận thành công.
+        '400':
+          description: Dữ liệu tọa độ GPS không đúng định dạng.
+
+  /rides/{rideId}/respond:
+    post:
+      summary: Chấp nhận hoặc từ chối yêu cầu đặt xe được phát (FR012, FR013)
+      description: Khi hệ thống phát tín hiệu chuyến đi tới tài xế, tài xế có khoảng thời gian quy định (ví dụ 15-30 giây) để bấm Chấp nhận hoặc Từ chối.
+      operationId: respondToRideRequest
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: rideId
+          in: path
+          description: Mã định danh duy nhất của chuyến đi (UUID).
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      requestBody:
+        description: Quyết định chấp nhận hoặc từ chối chuyến đi kèm lý do nếu từ chối.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Phản hồi nhận hoặc từ chối chuyến đi của tài xế.
+              required:
+                - accept
+              properties:
+                accept:
+                  type: boolean
+                  description: Xác nhận nhận chuyến (true = Đồng ý, false = Từ chối).
+                  example: true
+                rejectReason:
+                  type: string
+                  description: Lý do từ chối nhận chuyến (nếu accept = false).
+                  example: "Khoảng cách đến điểm đón quá xa"
+      responses:
+        '200':
+          description: Xử lý phản hồi thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideResponseResult'
+        '409':
+          description: Chuyến đi đã được nhận bởi tài xế khác hoặc đã bị hủy/hết hạn nhận chuyến.
+
+  /rides/{rideId}/progress:
+    put:
+      summary: Cập nhật tiến trình hành trình chuyến đi (FR014, FR018, FR019, FR020)
+      description: Tài xế chuyển tiếp các trạng thái chuyến đi trong suốt hành trình (Đã đến điểm đón -> Đã đón khách -> Hoàn thành chuyến đi).
+      operationId: updateRideProgress
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: rideId
+          in: path
+          description: Mã định danh duy nhất của chuyến đi đang thực hiện.
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      requestBody:
+        description: Trạng thái tiến trình chuyến đi mới và vị trí GPS hiện tại.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Dữ liệu cập nhật tiến trình chuyến đi.
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  description: Trạng thái mới của tiến trình chuyến đi.
+                  enum: [DRIVER_ARRIVED, PICKED_UP, COMPLETED]
+                  example: "PICKED_UP"
+                currentLocation:
+                  $ref: '#/components/schemas/GPSCoordinates'
+      responses:
+        '200':
+          description: Cập nhật tiến trình chuyến đi thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideProgressResponse'
+        '400':
+          description: Trạng thái cập nhật không hợp lệ theo luồng xử lý quy định.
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
+
+  schemas:
+    GPSCoordinates:
+      type: object
+      description: Tọa độ địa lý GPS cùng các thông số di chuyển của tài xế.
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: double
+          description: Vĩ độ hiện tại.
+          example: 10.776889
+        longitude:
+          type: number
+          format: double
+          description: Kinh độ hiện tại.
+          example: 106.700806
+        speedKmh:
+          type: number
+          format: float
+          description: Tốc độ di chuyển tính theo km/h.
+          example: 35.5
+        bearing:
+          type: number
+          format: float
+          description: Góc hướng di chuyển của thiết bị (0 - 360 độ).
+          example: 120.5
+        headingAccuracy:
+          type: number
+          format: float
+          description: Độ chính xác hướng của thiết bị.
+          example: 5.0
+
+    DriverLocationPayload:
+      type: object
+      description: Gói tin gửi vị trí GPS thời gian thực từ thiết bị của tài xế.
+      required:
+        - coordinates
+        - timestamp
+      properties:
+        coordinates:
+          $ref: '#/components/schemas/GPSCoordinates'
+        timestamp:
+          type: string
+          format: date-time
+          description: Thời điểm thiết bị ghi nhận tọa độ GPS.
+          example: "2026-09-09T18:53:00Z"
+
+    DriverStatusResponse:
+      type: object
+      description: Phản hồi thông tin trạng thái hoạt động hiện tại của tài xế.
+      properties:
+        driverId:
+          type: string
+          format: uuid
+          description: Mã định danh duy nhất của tài xế.
+          example: "e28d54a2-15f2-4c28-98f9-4d833bc71d43"
+        isOnline:
+          type: boolean
+          description: Trạng thái đang trực tuyến hay ngoại tuyến.
+          example: true
+        activeRideId:
+          type: string
+          format: uuid
+          nullable: true
+          description: Mã chuyến đi đang thực hiện (null nếu không có chuyến nào).
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Thời điểm cập nhật trạng thái gần nhất.
+          example: "2026-09-09T18:53:00Z"
+
+    RideResponseResult:
+      type: object
+      description: Kết quả xử lý việc chấp nhận nhận chuyến đi của tài xế.
+      properties:
+        rideId:
+          type: string
+          format: uuid
+          description: Mã chuyến đi đã nhận.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        accepted:
+          type: boolean
+          description: Trạng thái nhận chuyến thành công hay không.
+          example: true
+        pickupLocation:
+          $ref: '#/components/schemas/GPSCoordinates'
+        destinationLocation:
+          $ref: '#/components/schemas/GPSCoordinates'
+        customerName:
+          type: string
+          description: Tên đầy đủ của khách hàng đặt chuyến.
+          example: "Nguyễn Văn A"
+        customerPhoneNumber:
+          type: string
+          description: Số điện thoại liên hệ của khách hàng.
+          example: "+84901234567"
+
+    RideProgressResponse:
+      type: object
+      description: Phản hồi kết quả sau khi cập nhật tiến trình chuyến đi.
+      properties:
+        rideId:
+          type: string
+          format: uuid
+          description: Mã chuyến đi được cập nhật.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        status:
+          type: string
+          description: Trạng thái tiến trình chuyến đi hiện tại.
+          example: "IN_PROGRESS"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Thời gian cập nhật trạng thái thành công.
+          example: "2026-09-09T18:55:00Z"
