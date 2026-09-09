@@ -1,1 +1,367 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - Payment & Billing Service API
+  description: API quản lý quy trình thanh toán chuyến đi, tích hợp ví điện tử, quản lý giao dịch, hóa đơn và áp dụng mã khuyến mãi (FR026 - FR032).
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/payments
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ Thanh toán và Hóa đơn.
 
+paths:
+  /process:
+    post:
+      summary: Xử lý thanh toán cước phí chuyến đi (FR026, FR029)
+      description: Khởi tạo và xử lý giao dịch thanh toán cho chuyến đi qua Tiền mặt, Ví điện tử hoặc Thẻ ngân hàng.
+      operationId: processPayment
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin chuyến đi, phương thức thanh toán và số tiền cần giao dịch.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequest'
+      responses:
+        '200':
+          description: Xử lý thanh toán thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentTransactionResponse'
+        '400':
+          description: Thông tin thanh toán không hợp lệ hoặc số dư ví không đủ.
+        '402':
+          description: Thanh toán qua thẻ/ví bị từ chối bởi cổng thanh toán.
+
+  /promotions/apply:
+    post:
+      summary: Kiểm tra và áp dụng mã khuyến mãi (FR027)
+      description: Xác minh tính hợp lệ của mã giảm giá và tính toán số tiền được giảm cho chuyến đi.
+      operationId: applyPromotion
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin mã khuyến mãi và giá trị đơn hàng cần áp dụng.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Yêu cầu xác thực mã khuyến mãi.
+              required:
+                - promoCode
+                - originalFare
+              properties:
+                promoCode:
+                  type: string
+                  description: Mã khuyến mãi do người dùng nhập.
+                  example: "CABXIN2026"
+                originalFare:
+                  type: number
+                  description: Tổng cước phí gốc của chuyến đi chưa giảm giá.
+                  example: 100000
+      responses:
+        '200':
+          description: Mã khuyến mãi hợp lệ và áp dụng thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromotionApplyResponse'
+        '400':
+          description: Mã khuyến mãi không hợp lệ, hết hạn hoặc không đủ điều kiện sử dụng.
+
+  /wallet/balance:
+    get:
+      summary: Truy vấn số dư ví điện tử của người dùng (FR028)
+      description: Lấy số dư hiện tại trong ví nội bộ ứng dụng của Khách hàng hoặc Tài xế.
+      operationId: getWalletBalance
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Trả về thông tin số dư ví thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalletBalanceResponse'
+        '401':
+          description: Chưa xác thực tài khoản.
+
+  /wallet/topup:
+    post:
+      summary: Nạp tiền vào ví điện tử (FR028)
+      description: Tạo yêu cầu nạp tiền vào ví ứng dụng qua cổng thanh toán liên kết.
+      operationId: topUpWallet
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Số tiền nạp và cổng thanh toán liên kết.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Yêu cầu nạp tiền vào ví.
+              required:
+                - amount
+                - paymentGateway
+              properties:
+                amount:
+                  type: number
+                  description: Số tiền cần nạp vào ví (VNĐ).
+                  example: 200000
+                paymentGateway:
+                  type: string
+                  description: Cổng thanh toán chọn để thực hiện nạp tiền.
+                  enum: [VNPAY, ZALOPAY, MOMO, BANK_TRANSFER]
+                  example: "VNPAY"
+      responses:
+        '200':
+          description: Tạo yêu cầu nạp tiền thành công. Trả về liên kết chuyển hướng thanh toán.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Kết quả tạo liên kết nạp tiền.
+                properties:
+                  transactionId:
+                    type: string
+                    format: uuid
+                    description: Mã giao dịch nạp tiền.
+                    example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                  paymentUrl:
+                    type: string
+                    description: Đường dẫn chuyển hướng người dùng tới trang thanh toán.
+                    example: "https://sandbox.vnpayment.vn/pay50/gateway.html"
+
+  /invoices/{rideId}:
+    get:
+      summary: Xuất và xem hóa đơn chuyến đi (FR030, FR031, FR032)
+      description: Lấy thông tin chi tiết hóa đơn cước phí chuyến đi bao gồm cước gốc, phụ phí, giảm giá và thuế VAT.
+      operationId: getRideInvoice
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: rideId
+          in: path
+          description: Mã định danh duy nhất của chuyến đi (UUID).
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+      responses:
+        '200':
+          description: Trả về thông tin chi tiết hóa đơn chuyến đi thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceDetail'
+        '404':
+          description: Không tìm thấy hóa đơn tương ứng với chuyến đi.
+
+  /refund:
+    post:
+      summary: Xử lý hoàn tiền cho chuyến đi bị hủy (FR022, FR029)
+      description: Hoàn lại tiền vào ví hoặc tài khoản người dùng khi chuyến đi bị hủy theo chính sách.
+      operationId: refundPayment
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin chuyến đi cần hoàn tiền và lý do hoàn tiền.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Cấu trúc yêu cầu hoàn tiền.
+              required:
+                - rideId
+                - refundReason
+              properties:
+                rideId:
+                  type: string
+                  format: uuid
+                  description: Mã chuyến đi bị hủy cần hoàn tiền.
+                  example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+                refundReason:
+                  type: string
+                  description: Lý do chi tiết yêu cầu hoàn tiền.
+                  example: "Tài xế không đến đón, hủy chuyến đi"
+      responses:
+        '200':
+          description: Hoàn tiền thành công.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Kết quả xử lý hoàn tiền.
+                properties:
+                  refundTransactionId:
+                    type: string
+                    format: uuid
+                    description: Mã giao dịch hoàn tiền.
+                    example: "8a1e8400-e29b-41d4-a716-446655441111"
+                  refundAmount:
+                    type: number
+                    description: Số tiền đã hoàn lại cho khách hàng.
+                    example: 75000
+                  status:
+                    type: string
+                    description: Trạng thái xử lý hoàn tiền.
+                    example: "REFUNDED"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
+
+  schemas:
+    PaymentRequest:
+      type: object
+      description: Cấu trúc yêu cầu thực hiện thanh toán cho chuyến đi.
+      required:
+        - rideId
+        - paymentMethod
+        - amount
+      properties:
+        rideId:
+          type: string
+          format: uuid
+          description: Mã định danh chuyến đi cần thanh toán.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        paymentMethod:
+          type: string
+          description: Phương thức thanh toán được lựa chọn.
+          enum: [CASH, WALLET, CREDIT_CARD]
+          example: "WALLET"
+        amount:
+          type: number
+          description: Tổng số tiền phải thanh toán sau khi trừ khuyến mãi.
+          example: 75000
+        currency:
+          type: string
+          description: Loại tiền tệ giao dịch.
+          default: "VND"
+          example: "VND"
+
+    PaymentTransactionResponse:
+      type: object
+      description: Phản hồi thông tin kết quả giao dịch thanh toán.
+      properties:
+        transactionId:
+          type: string
+          format: uuid
+          description: Mã giao dịch thanh toán duy nhất.
+          example: "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+        rideId:
+          type: string
+          format: uuid
+          description: Mã chuyến đi liên quan.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        amount:
+          type: number
+          description: Số tiền đã giao dịch thành công.
+          example: 75000
+        paymentMethod:
+          type: string
+          description: Phương thức đã dùng để thanh toán.
+          example: "WALLET"
+        status:
+          type: string
+          description: Trạng thái của giao dịch.
+          enum: [SUCCESS, FAILED, PENDING]
+          example: "SUCCESS"
+        paidAt:
+          type: string
+          format: date-time
+          description: Thời điểm giao dịch được ghi nhận thành công.
+          example: "2026-09-09T19:00:00Z"
+
+    PromotionApplyResponse:
+      type: object
+      description: Kết quả tính toán ưu đãi khi áp dụng mã khuyến mãi thành công.
+      properties:
+        promoCode:
+          type: string
+          description: Mã khuyến mãi đã áp dụng.
+          example: "CABXIN2026"
+        discountAmount:
+          type: number
+          description: Số tiền được giảm bớt từ mã khuyến mãi.
+          example: 20000
+        finalFare:
+          type: number
+          description: Số tiền còn lại khách hàng cần phải thanh toán.
+          example: 80000
+        description:
+          type: string
+          description: Mô tả nội dung chương trình khuyến mãi.
+          example: "Giảm 20.000 VNĐ cho chuyến đi trong giờ thấp điểm"
+
+    WalletBalanceResponse:
+      type: object
+      description: Thông tin số dư tài khoản ví điện tử nội bộ.
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: Mã định danh chủ sở hữu ví.
+          example: "c4a89a06-4447-4950-9366-2679dc6e86ef"
+        balance:
+          type: number
+          description: Số dư khả dụng hiện tại trong ví (VNĐ).
+          example: 350000
+        currency:
+          type: string
+          description: Đơn vị tiền tệ.
+          example: "VND"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Thời điểm cập nhật số dư gần nhất.
+          example: "2026-09-09T18:30:00Z"
+
+    InvoiceDetail:
+      type: object
+      description: Chi tiết hóa đơn thanh toán tiền cước chuyến đi.
+      properties:
+        invoiceId:
+          type: string
+          format: uuid
+          description: Mã hóa đơn duy nhất.
+          example: "f21e8400-e29b-41d4-a716-446655440000"
+        rideId:
+          type: string
+          format: uuid
+          description: Mã chuyến đi tương ứng.
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        baseFare:
+          type: number
+          description: Cước phí cơ bản theo quãng đường/thời gian.
+          example: 85000
+        surcharge:
+          type: number
+          description: Phụ phí bổ sung (giờ cao điểm, phí thời tiết, cầu đường).
+          example: 10000
+        discountAmount:
+          type: number
+          description: Tổng tiền được giảm trừ từ mã khuyến mãi.
+          example: 20000
+        vatAmount:
+          type: number
+          description: Tiền thuế GTGT (VAT).
+          example: 750
+        totalAmount:
+          type: number
+          description: Tổng số tiền thanh toán cuối cùng.
+          example: 75750
+        issuedAt:
+          type: string
+          format: date-time
+          description: Thời điểm khởi tạo hóa đơn.
+          example: "2026-09-09T19:01:00Z"
