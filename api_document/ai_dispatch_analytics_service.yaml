@@ -1,1 +1,216 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - AI Dispatch & Analytics Service API
+  description: API dự báo nhu cầu chuyến đi, tính toán hệ số tăng giá linh hoạt (Surge Pricing), gợi ý điểm đón tối ưu (Hotspots) và điều phối chuyến đi thông minh dựa trên AI/ML.
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/ai
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ AI & Điều phối Thông minh.
 
+paths:
+  /surge-pricing:
+    post:
+      summary: Tính toán hệ số nhân giá chuyến đi (Surge Pricing)
+      description: Nhận thông tin khu vực, thời gian, thời tiết và tỷ lệ cung-cầu để AI tính toán hệ số tăng giá theo thời gian thực.
+      operationId: calculateSurgeFactor
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin vị trí, thời gian và dữ liệu môi trường để dự báo giá.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Cấu trúc yêu cầu tính toán hệ số giá linh hoạt.
+              required:
+                - latitude
+                - longitude
+              properties:
+                latitude:
+                  type: number
+                  format: double
+                  description: Vĩ độ điểm yêu cầu chuyến đi.
+                  example: 10.7769
+                longitude:
+                  type: number
+                  format: double
+                  description: Kinh độ điểm yêu cầu chuyến đi.
+                  example: 106.7009
+                weatherCondition:
+                  type: string
+                  description: Điều kiện thời tiết hiện tại.
+                  enum: [CLEAR, RAIN, HEAVY_RAIN, STORM]
+                  example: "RAIN"
+      responses:
+        '200':
+          description: Trả về hệ số tăng giá và lý do điều chỉnh.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Phản hồi hệ số nhân giá trị cước.
+                properties:
+                  surgeMultiplier:
+                    type: number
+                    description: Hệ số nhân giá trị trị cước (ví dụ 1.2 là tăng 20%).
+                    example: 1.5
+                  reason:
+                    type: string
+                    description: Lý do điều chỉnh hệ số giá.
+                    example: "Khu vực đang mưa to và thiếu hụt tài xế."
+
+  /hotspots:
+    get:
+      summary: Lấy danh sách khu vực nhu cầu cao dành cho Tài xế (Heatmap/Hotspots)
+      description: Cung cấp bản đồ nhiệt các điểm nóng nhu cầu giúp tài xế chủ động di chuyển đến khu vực dễ nhận chuyến.
+      operationId: getDemandHotspots
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: latitude
+          in: query
+          description: Vĩ độ vị trí hiện tại của tài xế.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 10.7769
+        - name: longitude
+          in: query
+          description: Kinh độ vị trí hiện tại của tài xế.
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 106.7009
+        - name: radiusKm
+          in: query
+          description: Bán kính quét điểm nóng (km).
+          required: false
+          schema:
+            type: number
+            default: 5
+            example: 5
+      responses:
+        '200':
+          description: Danh sách các điểm nóng nhu cầu chuyến đi.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Danh sách tọa độ và mức độ nhu cầu.
+                properties:
+                  hotspots:
+                    type: array
+                    description: Danh sách điểm nóng trên bản đồ.
+                    items:
+                      $ref: '#/components/schemas/HotspotZone'
+
+  /recommend-pickup:
+    post:
+      summary: Gợi ý điểm đón tối ưu cho Khách hàng
+      description: Phân tích vị trí người dùng để đề xuất các điểm đón thuận tiện gần nhất (tránh đường cấm, điểm ùn tắc).
+      operationId: recommendPickupPoint
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Vị trí hiện tại của khách hàng.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Yêu cầu tìm điểm đón tối ưu.
+              required:
+                - userLatitude
+                - userLongitude
+              properties:
+                userLatitude:
+                  type: number
+                  format: double
+                  description: Vĩ độ vị trí hiện tại của khách hàng.
+                  example: 10.7769
+                userLongitude:
+                  type: number
+                  format: double
+                  description: Kinh độ vị trí hiện tại của khách hàng.
+                  example: 106.7009
+      responses:
+        '200':
+          description: Trả về danh sách điểm đón gợi ý tối ưu.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Danh sách các điểm đón được AI đề xuất.
+                properties:
+                  recommendedPoints:
+                    type: array
+                    description: Chi tiết các vị trí đón thuận tiện.
+                    items:
+                      $ref: '#/components/schemas/RecommendedPickupPoint'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
+
+  schemas:
+    HotspotZone:
+      type: object
+      description: Chi tiết một vùng nhu cầu đặt xe cao.
+      properties:
+        zoneName:
+          type: string
+          description: Tên khu vực hoặc địa danh nổi bật.
+          example: "Sân bay Tân Sơn Nhất - Ga Quốc Nội"
+        latitude:
+          type: number
+          format: double
+          description: Vĩ độ trung tâm khu vực.
+          example: 10.8185
+        longitude:
+          type: number
+          format: double
+          description: Kinh độ trung tâm khu vực.
+          example: 106.6588
+        demandLevel:
+          type: string
+          description: Mức độ nhu cầu đặt xe.
+          enum: [MEDIUM, HIGH, CRITICAL]
+          example: "HIGH"
+        estimatedWaitTimeMinutes:
+          type: integer
+          description: Thời gian chờ nhận chuyến trung bình dự kiến.
+          example: 2
+
+    RecommendedPickupPoint:
+      type: object
+      description: Điểm đón đề xuất bởi hệ thống AI.
+      properties:
+        title:
+          type: string
+          description: Tên điểm đón dễ nhận biết.
+          example: "Sảnh B - Cổng số 3"
+        address:
+          type: string
+          description: Địa chỉ chi tiết điểm đón.
+          example: "Đường Trường Sơn, Phường 2, Tân Bình, TP.HCM"
+        latitude:
+          type: number
+          format: double
+          description: Vĩ độ điểm đón đề xuất.
+          example: 10.8188
+        longitude:
+          type: number
+          format: double
+          description: Kinh độ điểm đón đề xuất.
+          example: 106.6590
+        walkingDistanceMeters:
+          type: integer
+          description: Khoảng cách đi bộ từ vị trí hiện tại đến điểm đón (mét).
+          example: 45
