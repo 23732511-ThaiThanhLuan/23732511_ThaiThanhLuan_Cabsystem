@@ -1,1 +1,208 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - Support Ticket & Incident Service API
+  description: API quản lý yêu cầu hỗ trợ khách hàng (CSKH), tạo phiếu sự cố (Ticket), báo cáo thất lạc hành lý và xử lý báo động khẩn cấp SOS.
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/support
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ Hỗ trợ & Xử lý Sự cố.
 
+paths:
+  /tickets:
+    post:
+      summary: Tạo phiếu yêu cầu hỗ trợ / khiếu nại
+      description: Khách hàng hoặc tài xế gửi khiếu nại về cước phí, thái độ phục vụ hoặc sự cố chuyến đi.
+      operationId: createSupportTicket
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Thông tin chi tiết phiếu khiếu nại.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTicketRequest'
+      responses:
+        '201':
+          description: Tạo phiếu hỗ trợ thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketDetail'
+        '400':
+          description: Thông tin gửi lên không hợp lệ.
+
+    get:
+      summary: Lấy danh sách phiếu khiếu nại của tôi
+      description: Truy vấn lịch sử các yêu cầu hỗ trợ đã gửi và trạng thái xử lý.
+      operationId: getMyTickets
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Trả về danh sách phiếu hỗ trợ thành công.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Danh sách các phiếu khiếu nại.
+                items:
+                  $ref: '#/components/schemas/TicketDetail'
+
+  /lost-item:
+    post:
+      summary: Báo cáo thất lạc đồ đạc trên xe
+      description: Gửi báo cáo quên đồ cá nhân trên xe kèm thông tin chuyến đi để tổng đài hỗ trợ liên hệ tài xế.
+      operationId: reportLostItem
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Mô tả vật phẩm bị quên và chuyến đi tương ứng.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Cấu trúc báo cáo đồ thất lạc.
+              required:
+                - rideId
+                - itemDescription
+              properties:
+                rideId:
+                  type: string
+                  format: uuid
+                  description: Mã định danh chuyến đi bỏ quên đồ.
+                  example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+                itemDescription:
+                  type: string
+                  description: Chi tiết đồ vật bị thất lạc (Màu sắc, nhãn hiệu,...).
+                  example: "Ví da màu đen nhãn hiệu Tommy Hilfiger quên ở ghế sau"
+                contactPhone:
+                  type: string
+                  description: Số điện thoại nhận phản hồi.
+                  example: "+84901234567"
+      responses:
+        '200':
+          description: Đã ghi nhận báo cáo đồ thất lạc.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketDetail'
+
+  /sos/trigger:
+    post:
+      summary: Kích hoạt cảnh báo khẩn cấp SOS
+      description: Gửi tín hiệu SOS khẩn cấp trong chuyến đi tới bộ phận an ninh và các số liên lạc khẩn cấp đã đăng ký.
+      operationId: triggerSosSignal
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Tọa độ hiện tại và mã chuyến đi phát tín hiệu SOS.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Cấu trúc yêu cầu SOS.
+              required:
+                - rideId
+                - currentLatitude
+                - currentLongitude
+              properties:
+                rideId:
+                  type: string
+                  format: uuid
+                  description: Mã chuyến đi đang xảy ra sự cố.
+                  example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+                currentLatitude:
+                  type: number
+                  format: double
+                  description: Vĩ độ hiện tại thời điểm bấm SOS.
+                  example: 10.7769
+                currentLongitude:
+                  type: number
+                  format: double
+                  description: Kinh độ hiện tại thời điểm bấm SOS.
+                  example: 106.7009
+      responses:
+        '200':
+          description: Đã kích hoạt cảnh báo SOS và thông báo cho đội phản ứng nhanh.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Kết quả xử lý khẩn cấp SOS.
+                properties:
+                  sosAlertId:
+                    type: string
+                    format: uuid
+                    description: Mã định danh cảnh báo SOS.
+                    example: "4a2e8400-e29b-41d4-a716-446655449999"
+                  status:
+                    type: string
+                    description: Trạng thái tiếp nhận SOS.
+                    example: "DISPATCHED_SECURITY_TEAM"
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
+
+  schemas:
+    CreateTicketRequest:
+      type: object
+      description: Yêu cầu tạo phiếu hỗ trợ CSKH.
+      required:
+        - category
+        - subject
+        - description
+      properties:
+        rideId:
+          type: string
+          format: uuid
+          description: Mã chuyến đi liên quan (nếu có).
+          example: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"
+        category:
+          type: string
+          description: Phân loại khiếu nại.
+          enum: [FARE_DISPUTE, DRIVER_BEHAVIOR, VEHICLE_CONDITION, LOST_ITEM, APP_ISSUE]
+          example: "FARE_DISPUTE"
+        subject:
+          type: string
+          description: Tiêu đề ngắn gọn của khiếu nại.
+          example: "Tài xế tính sai tiền phụ phí cầu đường"
+        description:
+          type: string
+          description: Mô tả chi tiết vụ việc.
+          example: "Tài xế yêu cầu trả thêm 30.000đ tiền vé cầu đường dù đã tính trong ứng dụng."
+
+    TicketDetail:
+      type: object
+      description: Thông tin chi tiết phiếu hỗ trợ.
+      properties:
+        ticketId:
+          type: string
+          format: uuid
+          description: Mã phiếu hỗ trợ duy nhất.
+          example: "6c1e8400-e29b-41d4-a716-446655442222"
+        category:
+          type: string
+          description: Phân loại sự cố.
+          example: "FARE_DISPUTE"
+        subject:
+          type: string
+          description: Tiêu đề phiếu khiếu nại.
+          example: "Tài xế tính sai tiền phụ phí cầu đường"
+        status:
+          type: string
+          description: Trạng thái tiến độ xử lý ticket.
+          enum: [OPEN, IN_PROGRESS, RESOLVED, CLOSED]
+          example: "IN_PROGRESS"
+        createdAt:
+          type: string
+          format: date-time
+          description: Thời điểm gửi ticket.
+          example: "2026-09-09T18:00:00Z"
