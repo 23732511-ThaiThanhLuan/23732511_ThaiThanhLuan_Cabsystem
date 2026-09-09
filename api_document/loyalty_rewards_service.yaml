@@ -1,1 +1,132 @@
+openapi: 3.0.3
+info:
+  title: CAB Service - Loyalty & Rewards Service API
+  description: API quản lý tích điểm thưởng từ chuyến đi, đổi quà/voucher, xếp hạng thành viên khách hàng và chương trình nhiệm vụ thưởng tài xế.
+  version: 1.0.0
+servers:
+  - url: https://api.cabservice.com/v1/rewards
+    description: Máy chủ kiểm thử và vận hành cho Dịch vụ Tích điểm & Đổi quà.
 
+paths:
+  /profile:
+    get:
+      summary: Lấy thông tin tài khoản thành viên và điểm thưởng
+      description: Lấy tổng số điểm hiện có, hạng thành viên hiện tại và tiến trình thăng hạng.
+      operationId: getRewardProfile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Trả về thông tin điểm thưởng thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RewardProfileResponse'
+
+  /catalog:
+    get:
+      summary: Lấy danh mục quà tặng & Voucher đổi điểm
+      description: Danh sách các voucher ưu đãi chuyến đi hoặc quà tặng đối tác có thể dùng điểm đổi.
+      operationId: getRewardCatalog
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Danh sách phần thưởng khả dụng.
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Danh sách vật phẩm quà tặng.
+                items:
+                  $ref: '#/components/schemas/RewardItem'
+
+  /redeem:
+    post:
+      summary: Thực hiện đổi điểm lấy phần thưởng/voucher
+      description: Đổi số điểm hiện có để lấy mã giảm giá hoặc dịch vụ tương ứng.
+      operationId: redeemReward
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: Mã phần thưởng cần đổi.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Yêu cầu đổi phần thưởng.
+              required:
+                - rewardItemId
+              properties:
+                rewardItemId:
+                  type: string
+                  format: uuid
+                  description: Mã quà tặng cần thực hiện đổi.
+                  example: "880e8400-e29b-41d4-a716-446655448888"
+      responses:
+        '200':
+          description: Đổi quà thành công. Trả về mã voucher đã nhận.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Kết quả đổi quà.
+                properties:
+                  voucherCode:
+                    type: string
+                    description: Mã voucher nhận được sau khi đổi điểm.
+                    example: "REWARD_CAB50K"
+                  pointsDeducted:
+                    type: integer
+                    description: Số điểm đã bị trừ trong tài khoản.
+                    example: 500
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Nhập Access Token dưới dạng 'Bearer <token>'.
+
+  schemas:
+    RewardProfileResponse:
+      type: object
+      description: Chi tiết hồ sơ tích điểm của người dùng.
+      properties:
+        totalPoints:
+          type: integer
+          description: Số điểm thưởng hiện có khả dụng.
+          example: 1250
+        membershipTier:
+          type: string
+          description: Cấp bậc hạng thành viên hiện tại.
+          enum: [SILVER, GOLD, PLATINUM, DIAMOND]
+          example: "GOLD"
+        nextTierPointsRequired:
+          type: integer
+          description: Số điểm cần tích lũy thêm để lên hạng tiếp theo.
+          example: 750
+
+    RewardItem:
+      type: object
+      description: Thông tin phần thưởng trong danh mục đổi điểm.
+      properties:
+        rewardItemId:
+          type: string
+          format: uuid
+          description: Mã quà tặng duy nhất.
+          example: "880e8400-e29b-41d4-a716-446655448888"
+        title:
+          type: string
+          description: Tên voucher hoặc quà tặng.
+          example: "Voucher giảm 50.000đ chuyến đi GrabCar/CAB"
+        pointsRequired:
+          type: integer
+          description: Số điểm cần thiết để thực hiện đổi.
+          example: 500
+        imageUrl:
+          type: string
+          description: Đường dẫn hình ảnh quà tặng.
+          example: "https://cdn.cabservice.com/rewards/v50k.png"
